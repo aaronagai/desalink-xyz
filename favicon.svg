@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="475 439.5 120 120">
+  <!-- Favicon: the swoosh from desalinklogo.svg on a rounded square -->
+  <defs>
+    <linearGradient id="swoosh" x1="495.4" y1="531.59" x2="567.33" y2="459.67" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset=".5" stop-color="#fff" stop-opacity=".85"/>
+      <stop offset="1" stop-color="#fff" stop-opacity=".35"/>
+    </linearGradient>
+  </defs>
+  <rect x="475" y="439.5" width="120" height="120" rx="26" fill="#141414"/>
+  <path fill="url(#swoosh)" d="M506.5,542.69c.96-4.93,7.17-34.4,33.61-48.38,9.17-4.85,18.02-6.38,24.48-6.8.36-10.37.73-20.74,1.09-31.1-8.3.9-18.62,3.45-28.52,9.98-34.91,23.05-30.92,73.58-30.66,76.3Z"/>
+</svg>

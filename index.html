@@ -3,11 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#f6f5f2" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#111110" media="(prefers-color-scheme: dark)" />
   <title>Desalink: High-Speed Internet for Rural Sarawak</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=7" />
+  <link rel="stylesheet" href="style.css?v=11" />
 </head>
 <body>
 
@@ -40,6 +46,7 @@
 
     <!-- ====== HERO ====== -->
     <section class="hero" id="hero">
+      <canvas class="hero__stars" id="heroStars" aria-hidden="true"></canvas>
       <span class="pill">Authorised Starlink installer</span>
       <h1 class="hero__title">High-speed internet<br />for rural Sarawak</h1>
       <p class="hero__sub">
@@ -51,8 +58,11 @@
         <a href="#how-it-works" class="btn btn--ghost">How it works</a>
       </div>
     </section>
-    <img class="hero__img" src="images/header.jpg" width="1731" height="909" fetchpriority="high"
-         alt="Painting of limestone pinnacles rising from misty rainforest in Sarawak" />
+    <picture>
+      <source srcset="images/headernight.jpg" media="(prefers-color-scheme: dark)" />
+      <img class="hero__img" src="images/header.jpg" width="1731" height="909" fetchpriority="high"
+           alt="Painting of limestone pinnacles rising from rainforest in Sarawak" />
+    </picture>
 
     <!-- ====== RELIABLE & RESILIENT ====== -->
     <section class="split" id="reliable">
@@ -306,6 +316,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=8"></script>
 </body>
 </html>

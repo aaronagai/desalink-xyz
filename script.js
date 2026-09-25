@@ -70,6 +70,100 @@ document.documentElement.classList.add('js');
   check();
 })();
 
+// ---------- HERO STARS (twinkling grey dots) ----------
+(function () {
+  const canvas = document.getElementById('heroStars');
+  if (!canvas || !canvas.getContext) return;
+  const ctx = canvas.getContext('2d');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const dark = window.matchMedia('(prefers-color-scheme: dark)');
+
+  let stars = [], w = 0, h = 0, dpr = 1, rgb = '110,110,106', running = true, frame = null;
+
+  function readColor() {
+    rgb = getComputedStyle(document.documentElement).getPropertyValue('--star').trim() || rgb;
+  }
+
+  function build() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = canvas.clientWidth;
+    h = canvas.clientHeight;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const count = Math.round((w * h) / 3200);
+    stars = [];
+    for (let i = 0; i < count; i++) {
+      const big = Math.random() < 0.06;
+      stars.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: big ? 1.3 + Math.random() * 0.7 : 0.5 + Math.random() * 0.8,
+        base: big ? 0.55 + Math.random() * 0.3 : 0.18 + Math.random() * 0.35,
+        speed: 0.5 + Math.random() * 1.6,        // radians per second
+        phase: Math.random() * Math.PI * 2,
+        glint: big
+      });
+    }
+  }
+
+  function draw(t) {
+    ctx.clearRect(0, 0, w, h);
+    const time = t / 1000;
+    for (const s of stars) {
+      // Twinkle between ~25% and 100% of the star's base brightness.
+      const tw = reduced.matches ? 1 : 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(time * s.speed + s.phase));
+      const a = s.base * tw;
+      ctx.fillStyle = 'rgba(' + rgb + ',' + a.toFixed(3) + ')';
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Bright stars get a small cross-shaped glint near their peak.
+      if (s.glint && tw > 0.8) {
+        const len = s.r * 4 * (tw - 0.8) * 5;
+        ctx.strokeStyle = 'rgba(' + rgb + ',' + (a * 0.6).toFixed(3) + ')';
+        ctx.lineWidth = 0.6;
+        ctx.beginPath();
+        ctx.moveTo(s.x - len, s.y); ctx.lineTo(s.x + len, s.y);
+        ctx.moveTo(s.x, s.y - len); ctx.lineTo(s.x, s.y + len);
+        ctx.stroke();
+      }
+    }
+  }
+
+  function loop(t) {
+    draw(t);
+    frame = running && !reduced.matches ? requestAnimationFrame(loop) : null;
+  }
+
+  function start() {
+    if (!frame) frame = requestAnimationFrame(loop);
+  }
+
+  readColor();
+  build();
+  draw(performance.now());   // paint one frame straight away
+  start();
+
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { build(); draw(performance.now()); }, 150);
+  });
+  dark.addEventListener('change', () => { readColor(); draw(performance.now()); });
+  reduced.addEventListener('change', () => { draw(performance.now()); start(); });
+
+  // Pause the animation while the hero is scrolled out of view.
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver((entries) => {
+      running = entries[0].isIntersecting;
+      if (running) start();
+    }).observe(canvas);
+  }
+})();
+
 // ---------- AVAILABILITY CHECK (STUB) ----------
 (function () {
   document.querySelectorAll('.order__form').forEach((form) => {
