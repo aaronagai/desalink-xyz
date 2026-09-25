@@ -120,7 +120,6 @@ button { font: inherit; }
   color: var(--muted);
 }
 .ph span { font-family: var(--mono); font-size: 11px; letter-spacing: .02em; }
-.ph--hero   { width: 100%; aspect-ratio: 16 / 7; margin-top: 64px; }
 .ph--square { width: 100%; aspect-ratio: 1 / 1; }
 
 /* ---------- NAVIGATION ---------- */
@@ -200,8 +199,10 @@ button { font: inherit; }
 
 /* ---------- HERO ---------- */
 .hero {
+  position: relative;
+  z-index: 1;
   padding-top: calc(var(--nav-h) + 96px);
-  padding-bottom: 96px;
+  padding-bottom: 0;
   text-align: center;
 }
 .hero__title {
@@ -218,6 +219,20 @@ button { font: inherit; }
   color: var(--ink-2);
 }
 .hero__actions { display: flex; gap: 8px; justify-content: center; margin-top: 28px; }
+/* Full-bleed header image, edge to edge below the hero text */
+.hero__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1731 / 640;   /* crops the empty white sky off the top */
+  max-height: 72vh;
+  margin-top: -150px;         /* slide the misty sky up behind the hero text */
+  object-fit: cover;
+  object-position: center bottom;
+  /* The painting's sky fades to white; blend it into the page background */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%);
+          mask-image: linear-gradient(to bottom, transparent 0%, #000 22%);
+}
 
 /* ---------- SPLIT (text + image) ---------- */
 .split {
@@ -451,7 +466,7 @@ article.tile:hover .tile__box { background: var(--surface-2); }
 
 @media (max-width: 560px) {
   .hero { padding-top: calc(var(--nav-h) + 56px); padding-bottom: 56px; }
-  .ph--hero { aspect-ratio: 4 / 3; margin-top: 40px; }
+  .hero__img { aspect-ratio: 4 / 3; margin-top: -60px; }
   .tiles--3 { grid-template-columns: 1fr; }
   .hero__actions { flex-wrap: wrap; }
 }
