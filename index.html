@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=11" />
+  <link rel="stylesheet" href="style.css?v=14" />
 </head>
 <body>
 
@@ -45,15 +45,15 @@
   <main>
 
     <!-- ====== HERO ====== -->
-    <section class="hero" id="hero">
+    <section class="hero t-stagger" id="hero">
       <canvas class="hero__stars" id="heroStars" aria-hidden="true"></canvas>
-      <span class="pill">Authorised Starlink installer</span>
-      <h1 class="hero__title">High-speed internet<br />for rural Sarawak</h1>
-      <p class="hero__sub">
+      <span class="pill hero__line" style="--n:0">Authorised Starlink installer</span>
+      <h1 class="hero__title hero__line" style="--n:1">High-speed internet<br />for rural Sarawak</h1>
+      <p class="hero__sub hero__line" style="--n:2">
         Satellite broadband delivered, installed and supported by a local team,
         from Kuching to the longhouses of the Baram.
       </p>
-      <div class="hero__actions">
+      <div class="hero__actions hero__line" style="--n:3">
         <a href="#order" class="btn btn--dark">Check availability</a>
         <a href="#how-it-works" class="btn btn--ghost">How it works</a>
       </div>
@@ -78,7 +78,18 @@
           heat and harsh winds.
         </p>
       </div>
-      <div class="ph ph--square reveal" aria-hidden="true"><span>Image: dish in the rain</span></div>
+      <div class="uptime reveal" id="uptime">
+        <div class="uptime__head">
+          <span class="uptime__status"><svg class="uptime__check" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8"/><path d="M4.6 8.2l2.2 2.2 4.6-4.8"/></svg>All sites operational</span>
+          <span class="mono mono--muted">Last 90 days</span>
+        </div>
+        <div class="uptime__rows" id="uptimeRows"></div>
+        <div class="uptime__foot">
+          <span class="mono mono--muted">Illustrative data</span>
+          <button type="button" class="textlink uptime__more" id="uptimeMore">View all sites</button>
+        </div>
+        <div class="uptime__tip mono" id="uptimeTip" role="tooltip" hidden></div>
+      </div>
     </section>
 
     <!-- ====== BIRD'S EYE VIEW / TERMINAL ====== -->
@@ -189,8 +200,9 @@
         <h2 class="cta__title">Ready to connect?</h2>
         <p>Check if Desalink is available in your area. Enter your village name, GPS coordinates or postcode and we'll reach out.</p>
       </div>
-      <form class="order__form cta__form">
-        <input type="text" class="cta__input" placeholder="Village or postcode *" aria-label="Village name, GPS coordinates or postcode" />
+      <form class="order__form cta__form t-input-wrap" novalidate>
+        <input type="text" class="cta__input t-input" placeholder="Village or postcode *" aria-label="Village name, GPS coordinates or postcode" aria-describedby="ctaError" />
+        <span class="cta__error t-error-msg" id="ctaError">Enter a village name, GPS coordinates or postcode.</span>
         <button type="submit" class="btn btn--light">Check availability</button>
       </form>
     </div>
@@ -273,6 +285,7 @@
           <span class="sitemap__live"><i></i>Live</span>
         </div>
         <div class="dash__filters" id="dashFilters" role="group" aria-label="Filter sites">
+          <span class="dash__pill" aria-hidden="true"></span>
           <button type="button" class="dash__filter is-on" data-filter="all">All <span></span></button>
           <button type="button" class="dash__filter" data-filter="connected">Connected <span></span></button>
           <button type="button" class="dash__filter" data-filter="pending">Pending <span></span></button>
@@ -316,6 +329,9 @@
     </div>
   </div>
 
-  <script src="script.js?v=8"></script>
+  <!-- Toast (availability confirmation) -->
+  <div class="toast t-toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js?v=15"></script>
 </body>
 </html>

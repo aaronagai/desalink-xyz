@@ -37,6 +37,33 @@
   --pending:   #8a8883;
   --inactive:  #c6c4be;
   color-scheme: light dark;
+
+  /* Motion — timings and easings from transitions.dev */
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --stagger-dur: 500ms;       /* texts reveal */
+  --stagger-step: 70ms;
+  --stagger-distance: 12px;
+  --stagger-blur: 3px;
+  --modal-open-dur: 250ms;    /* modal open/close */
+  --modal-close-dur: 150ms;
+  --modal-scale: 0.96;
+  --tabs-dur: 250ms;          /* tabs sliding */
+  --text-swap-dur: 150ms;     /* text states swap */
+  --text-swap-y: 4px;
+  --text-swap-blur: 2px;
+  --tt-in-dur: 150ms;         /* tooltip */
+  --tt-out-dur: 50ms;
+  --tt-delay: 80ms;
+  --toast-open: 350ms;        /* toast */
+  --toast-close: 250ms;
+  --digit-dur: 500ms;         /* number pop-in */
+  --digit-step: 70ms;
+  --digit-ease: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --shake-a: 80ms;            /* error state shake */
+  --shake-b: 60ms;
+  --revert-dur: 280ms;
+  --panel-open-dur: 400ms;    /* panel reveal */
+  --panel-close-dur: 350ms;
   --font:      'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --mono:      'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   --nav-h:     64px;
@@ -225,10 +252,21 @@ button { font: inherit; }
   padding: 24px;
   background: var(--bg);
   opacity: 0;
+  transform: translateY(-16px);
+  filter: blur(2px);
   pointer-events: none;
-  transition: opacity .25s var(--ease);
+  transition:
+    opacity   var(--panel-close-dur) var(--ease-out-expo),
+    transform var(--panel-close-dur) var(--ease-out-expo),
+    filter    var(--panel-close-dur) var(--ease-out-expo);
 }
-.mobile-menu.open { opacity: 1; pointer-events: auto; }
+.mobile-menu.open {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  pointer-events: auto;
+  transition-duration: var(--panel-open-dur);
+}
 .mobile-menu__link {
   padding: 16px 0;
   font-size: 1.5rem;
@@ -326,6 +364,101 @@ button { font: inherit; }
   padding-top: 72px;
   padding-bottom: 72px;
 }
+/* ---------- UPTIME CARD (reliability section) ---------- */
+.uptime {
+  position: relative;
+  padding: 20px 22px 16px;
+  background: var(--surface);
+  border-radius: var(--radius);
+}
+.uptime__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.uptime__status { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; }
+.uptime__check { width: 16px; height: 16px; flex-shrink: 0; }
+.uptime__check circle { fill: var(--ink); }
+.uptime__check path { fill: none; stroke: var(--bg); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.uptime__row { padding: 14px 0 2px; }
+.uptime__label { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; font-size: 13px; }
+.uptime__label > span:first-child { display: inline-flex; align-items: center; gap: 8px; text-transform: capitalize; }
+.uptime__label small { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: none; }
+.uptime__label .uptime__check { width: 13px; height: 13px; }
+.uptime__pct { font-size: 12px; color: var(--ink-2); }
+
+.uptime__bars { display: flex; gap: 2px; height: 26px; }
+.uptime__bars i {
+  flex: 1;
+  min-width: 1px;
+  border-radius: 1.5px;
+  background: var(--ink);
+  opacity: .82;
+  cursor: default;
+  transform-origin: bottom;
+  transition: opacity .15s var(--ease), transform .45s cubic-bezier(.2,.8,.2,1);
+}
+.uptime__bars i.is-degraded { background: var(--pending); opacity: 1; }
+.uptime__bars i.is-outage   { background: var(--inactive); opacity: 1; }
+.uptime__bars i:hover,
+.uptime__bars i.is-hover    { opacity: .45; }
+
+/* Bars grow in row by row, left to right, once the card is scrolled into view
+   (script.js adds .is-live, then .is-done when the animation has finished) */
+.js .uptime:not(.is-live) .uptime__bars i { transform: scaleY(0); }
+.uptime.is-live:not(.is-done) .uptime__bars i {
+  transition-delay: calc(var(--row, 0) * 140ms + var(--i, 0) * 8ms);
+}
+
+.uptime__axis { display: flex; justify-content: space-between; margin-top: 6px; font-size: 10px; color: var(--muted); }
+
+.uptime__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.uptime__more { background: none; border: none; border-bottom: 1px solid currentColor; color: var(--ink); cursor: pointer; font: inherit; font-size: 13px; padding: 0 0 1px; }
+
+.uptime__tip {
+  position: absolute;
+  z-index: 3;
+  padding: 7px 10px;
+  font-size: 11px;
+  line-height: 1.45;
+  white-space: nowrap;
+  color: var(--ink);
+  background: var(--card);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, calc(-100% - 8px)) scale(.98);
+  transform-origin: 50% 100%;
+  transition:
+    opacity   var(--tt-out-dur) ease-out,
+    transform var(--tt-out-dur) ease-out;
+}
+.uptime__tip.is-open {
+  opacity: 1;
+  transform: translate(-50%, calc(-100% - 8px)) scale(1);
+  transition-duration: var(--tt-in-dur);
+  transition-delay: var(--tt-delay);
+}
+.uptime__tip.is-moving { transition-delay: 0s; }  /* already open: follow the pointer without re-delaying */
+.uptime__tip b { font-weight: 500; }
+.uptime__tip span { display: block; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  .js .uptime:not(.is-live) .uptime__bars i { transform: none; }
+  .uptime__bars i { transition: opacity .15s; }
+}
+
 /* ---------- SITE MAP (dotted Sarawak, live status) ---------- */
 .sitemap {
   padding: 20px 20px 16px;
@@ -377,7 +510,27 @@ button { font: inherit; }
   transform: translate(var(--tx, -50%), var(--ty, calc(-100% - 16px)));
   transition: left .5s var(--ease), top .5s var(--ease), opacity .25s var(--ease);
 }
-.sitemap__card.is-swapping { opacity: 0; }
+/* Text states swap: old site exits up with blur, next one enters from below */
+.sitemap__card > span,
+.dash__detail > * {
+  transition:
+    transform var(--text-swap-dur) ease-in-out,
+    filter    var(--text-swap-dur) ease-in-out,
+    opacity   var(--text-swap-dur) ease-in-out;
+}
+.sitemap__card.is-exit > span,
+.dash__detail.is-exit > * {
+  transform: translateY(calc(var(--text-swap-y) * -1));
+  filter: blur(var(--text-swap-blur));
+  opacity: 0;
+}
+.sitemap__card.is-enter-start > span,
+.dash__detail.is-enter-start > * {
+  transform: translateY(var(--text-swap-y));
+  filter: blur(var(--text-swap-blur));
+  opacity: 0;
+  transition: none;
+}
 .sitemap__card-name { font-size: 13px; font-weight: 500; }
 .sitemap__card-loc { text-transform: capitalize; }
 .sitemap__card-status { margin-top: 6px; text-transform: capitalize; }
@@ -431,6 +584,18 @@ article.tile:hover .tile__box { background: var(--surface-2); }
   letter-spacing: -0.03em;
 }
 .tile__num--sm { font-size: 1.4rem; font-weight: 400; }
+
+/* Number pop-in: each character rises in with blur, staggered */
+@keyframes digit-pop-in {
+  0%   { transform: translateY(8px); opacity: 0; filter: blur(2px); }
+  100% { transform: none; opacity: 1; filter: none; }
+}
+.digit { display: inline-block; white-space: pre; }
+.js .tile__num.has-digits:not(.is-animating) .digit { opacity: 0; }
+.tile__num.is-animating .digit {
+  animation: digit-pop-in var(--digit-dur) var(--digit-ease) both;
+  animation-delay: calc(var(--d, 0) * var(--digit-step) + 150ms);
+}
 .tile__label { font-size: 1.15rem; font-weight: 400; letter-spacing: -0.01em; }
 
 /* ---------- CTA BAND ---------- */
@@ -461,6 +626,33 @@ article.tile:hover .tile__box { background: var(--surface-2); }
 }
 .cta__input::placeholder { color: rgba(255,255,255,.7); }
 .cta__input:focus { background: rgba(255,255,255,.22); }
+
+/* Error state shake */
+.cta__input { border: 1px solid transparent; transition: border-color 150ms ease-out, background .2s; }
+.cta__input.is-error { border-color: rgba(255,255,255,.75); transition: border-color var(--revert-dur) ease-out; }
+.cta__input.is-shaking {
+  animation: input-shake calc(var(--shake-a) * 2 + var(--shake-b) * 2) linear;
+}
+@keyframes input-shake {
+  0%      { transform: translateX(0);    animation-timing-function: var(--ease-out-expo); }
+  28.57%  { transform: translateX(6px);  animation-timing-function: var(--ease-out-expo); }
+  57.14%  { transform: translateX(-6px); animation-timing-function: var(--ease-out-expo); }
+  78.57%  { transform: translateX(4px);  animation-timing-function: var(--ease-out-expo); }
+  100%    { transform: translateX(0); }
+}
+.cta__error {
+  margin: -4px 0 0 16px;
+  font-size: 12px;
+  color: rgba(255,255,255,.8);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--revert-dur) ease-out, visibility 0s linear var(--revert-dur);
+}
+.cta__form.is-error .cta__error {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--revert-dur) ease-out, visibility 0s linear 0s;
+}
 
 /* ---------- FOOTER ---------- */
 .footer { position: relative; color: #fff; background: var(--cta-2); overflow: hidden; }
@@ -498,10 +690,18 @@ article.tile:hover .tile__box { background: var(--surface-2); }
 
 /* ---------- REVEAL ---------- */
 /* Only hide for the fade-in once script.js has run, so content never gets stuck invisible. */
-.js .reveal { opacity: 0; translate: 0 20px; transition: opacity .8s var(--ease), translate .8s var(--ease); }
-.js .reveal.revealed { opacity: 1; translate: 0 0; }
+.js .reveal {
+  opacity: 0;
+  translate: 0 var(--stagger-distance);
+  filter: blur(var(--stagger-blur));
+  transition:
+    opacity   calc(var(--stagger-dur) * 1.4) var(--ease-out-expo),
+    translate calc(var(--stagger-dur) * 1.4) var(--ease-out-expo),
+    filter    calc(var(--stagger-dur) * 1.4) var(--ease-out-expo);
+}
+.js .reveal.revealed { opacity: 1; translate: 0 0; filter: none; }
 @media (prefers-reduced-motion: reduce) {
-  .js .reveal { opacity: 1; translate: none; transition: none; }
+  .js .reveal { opacity: 1; translate: none; filter: none; transition: none; }
 }
 
 /* ---------- RESPONSIVE ---------- */
@@ -552,10 +752,10 @@ article.tile:hover .tile__box { background: var(--surface-2); }
   background: var(--backdrop);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  animation: fade-in .25s var(--ease);
+  opacity: 0;
+  transition: opacity var(--modal-close-dur) var(--ease-out-expo);
 }
-@keyframes fade-in { from { opacity: 0; } }
-@keyframes rise-in { from { opacity: 0; transform: translateY(12px) scale(.985); } }
+.modal.is-open .modal__backdrop { opacity: 1; transition-duration: var(--modal-open-dur); }
 
 /* ---------- LIVE DEMO DASHBOARD ---------- */
 .dash {
@@ -569,7 +769,17 @@ article.tile:hover .tile__box { background: var(--surface-2); }
   border-radius: 14px;
   box-shadow: var(--shadow-lg);
   overflow: hidden;
-  animation: rise-in .35s var(--ease);
+  /* Modal open/close: scale up from 96%, dip back on close */
+  opacity: 0;
+  transform: scale(var(--modal-scale));
+  transition:
+    transform var(--modal-close-dur) var(--ease-out-expo),
+    opacity   var(--modal-close-dur) var(--ease-out-expo);
+}
+.modal.is-open .dash {
+  opacity: 1;
+  transform: scale(1);
+  transition-duration: var(--modal-open-dur);
 }
 
 .dash__head {
@@ -591,7 +801,22 @@ article.tile:hover .tile__box { background: var(--surface-2); }
   background: var(--ink);
   border-radius: 6px;
 }
-.dash__filters { display: flex; gap: 4px; padding: 3px; background: var(--surface); border-radius: 999px; }
+.dash__filters { position: relative; display: flex; gap: 4px; padding: 3px; background: var(--surface); border-radius: 999px; }
+/* Tabs sliding: one pill glides to the active filter */
+.dash__pill {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  height: 28px;
+  width: 0;
+  background: var(--card);
+  border-radius: 999px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+  transition:
+    transform var(--tabs-dur) var(--ease-out-expo),
+    width     var(--tabs-dur) var(--ease-out-expo);
+  pointer-events: none;
+}
 .dash__filter {
   height: 28px;
   padding: 0 12px;
@@ -601,11 +826,13 @@ article.tile:hover .tile__box { background: var(--surface-2); }
   border: none;
   border-radius: 999px;
   cursor: pointer;
-  transition: background .2s var(--ease), color .2s var(--ease);
+  position: relative;
+  z-index: 1;
+  transition: color var(--tabs-dur) var(--ease-out-expo);
 }
 .dash__filter span { font-family: var(--mono); font-size: 11px; opacity: .7; margin-left: 2px; }
 .dash__filter:hover { color: var(--ink); }
-.dash__filter.is-on { color: var(--ink); background: var(--card); box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+.dash__filter.is-on { color: var(--ink); }
 .dash__close {
   width: 32px;
   height: 32px;
@@ -709,5 +936,60 @@ article.tile:hover .tile__box { background: var(--surface-2); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dash, .modal__backdrop { animation: none; }
+  .dash, .modal__backdrop, .dash__pill, .dash__filter { transition: none !important; }
+}
+
+/* ---------- TRANSITIONS (adapted from transitions.dev) ---------- */
+
+/* Texts reveal: hero lines rise in with blur, staggered */
+.js .t-stagger .hero__line {
+  opacity: 0;
+  transform: translateY(var(--stagger-distance));
+  filter: blur(var(--stagger-blur));
+  transition:
+    opacity   var(--stagger-dur) var(--ease-out-expo),
+    transform var(--stagger-dur) var(--ease-out-expo),
+    filter    var(--stagger-dur) var(--ease-out-expo);
+  transition-delay: calc(var(--n, 0) * var(--stagger-step));
+}
+.js .t-stagger.is-shown .hero__line { opacity: 1; transform: none; filter: none; }
+.hero__actions.hero__line { display: flex; }
+
+/* Toast: rises from the bottom with fade, blur and slight scale */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 3000;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink);
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 16px) scale(.97);
+  filter: blur(2px);
+  transition:
+    opacity   var(--toast-close) var(--ease-out-expo),
+    transform var(--toast-close) var(--ease-out-expo),
+    filter    var(--toast-close) var(--ease-out-expo);
+}
+.toast.is-open {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+  filter: none;
+  transition-duration: var(--toast-open);
+}
+.toast b { font-weight: 500; }
+
+@media (prefers-reduced-motion: reduce) {
+  .js .t-stagger .hero__line,
+  .toast, .mobile-menu, .uptime__tip,
+  .sitemap__card > span, .dash__detail > * { transition: none !important; }
+  .tile__num .digit, .cta__input { animation: none !important; }
+  .js .tile__num.has-digits .digit { opacity: 1; }
 }

@@ -4,6 +4,48 @@
 
 document.documentElement.classList.add('js');
 
+const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cssMs = (name, fallback) =>
+  parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || fallback;
+
+// Text states swap (transitions.dev): old content exits up with blur, update()
+// swaps it, then the new content enters from below.
+function swapContent(el, update) {
+  if (REDUCED_MOTION) { update(); return; }
+  clearTimeout(el._swapTimer);
+  el.classList.add('is-exit');
+  el._swapTimer = setTimeout(() => {
+    update();
+    el.classList.remove('is-exit');
+    el.classList.add('is-enter-start');
+    void el.offsetHeight; // reflow so the entrance transitions
+    el.classList.remove('is-enter-start');
+  }, cssMs('--text-swap-dur', 150));
+}
+
+// Calls fn once, the first time el's top passes `fraction` of the viewport height.
+function whenInView(el, fraction, fn) {
+  function check() {
+    if (el.getBoundingClientRect().top < window.innerHeight * fraction) {
+      window.removeEventListener('scroll', check);
+      window.removeEventListener('resize', check);
+      fn();
+    }
+  }
+  window.addEventListener('scroll', check, { passive: true });
+  window.addEventListener('resize', check);
+  check();
+}
+
+// ---------- HERO TEXT REVEAL (staggered rise with blur) ----------
+(function () {
+  const hero = document.querySelector('.t-stagger');
+  if (!hero) return;
+  const show = () => hero.classList.add('is-shown');
+  requestAnimationFrame(() => requestAnimationFrame(show));
+  setTimeout(show, 120); // in case animation frames are paused (background tab)
+})();
+
 // ---------- NAV SCROLL EFFECT ----------
 (function () {
   const nav = document.getElementById('navbar');
@@ -166,15 +208,64 @@ document.documentElement.classList.add('js');
 
 // ---------- AVAILABILITY CHECK (STUB) ----------
 (function () {
+  const toast = document.getElementById('toast');
+  let toastTimer = null;
+
+  function showToast(html) {
+    if (!toast) return;
+    toast.innerHTML = html;
+    toast.classList.add('is-open');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('is-open'), 5000);
+  }
+
   document.querySelectorAll('.order__form').forEach((form) => {
+    const input = form.querySelector('input');
+
+    function clearError() {
+      clearTimeout(form._revertTimer);
+      form.classList.remove('is-error');
+      input.classList.remove('is-error');
+    }
+
+    // Error state shake: shake, show the message, revert after a few seconds.
+    function showError() {
+      form.classList.add('is-error');
+      input.classList.add('is-error');
+      input.classList.remove('is-shaking');
+      void input.offsetWidth;
+      input.classList.add('is-shaking');
+      const shakeMs = cssMs('--shake-a', 80) * 2 + cssMs('--shake-b', 60) * 2;
+      setTimeout(() => input.classList.remove('is-shaking'), shakeMs + 20);
+      clearTimeout(form._revertTimer);
+      form._revertTimer = setTimeout(clearError, shakeMs + 3000);
+      input.focus();
+    }
+
+    input.addEventListener('input', clearError);
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const input = form.querySelector('input');
       const val = input.value.trim();
-      if (!val) { input.focus(); return; }
-      alert(`Thanks! We'll check availability for "${val}" and get back to you via WhatsApp or email within 24 hours.`);
+      if (!val) { showError(); return; }
+      clearError();
+      const safe = val.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      showToast('<b>Thanks!</b> We\'ll check availability for “' + safe + '” and reply by WhatsApp or email within 24 hours.');
       input.value = '';
     });
+  });
+})();
+
+
+// ---------- STATS: NUMBER POP-IN ----------
+(function () {
+  document.querySelectorAll('.tile__num:not(.tile__num--sm)').forEach((num) => {
+    const text = num.textContent;
+    num.setAttribute('aria-label', text);
+    num.innerHTML = Array.from(text)
+      .map((ch, i) => '<span class="digit" aria-hidden="true" style="--d:' + i + '">' + ch + '</span>')
+      .join('');
+    num.classList.add('has-digits');
+    whenInView(num, 0.85, () => num.classList.add('is-animating'));
   });
 })();
 
@@ -211,6 +302,17 @@ const SITES = [
   { code: 'v4_029', site: 'Kampung Medamit', location: 'limbang', district: 'limbang', status: 'connected', start: '5/1/2026', end: '5/1/2027', plan: 'business local priority 500gb' },
   { code: 'v4_030', site: 'Long Semadoh', location: 'lawas', district: 'limbang', status: 'pending', start: '15/12/2026', end: '15/12/2027', plan: 'business local priority 500gb' },
 ];
+
+// Deterministic pseudo-random numbers, so simulated data is stable between visits.
+function seeded(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) h = Math.imul(h ^ str.charCodeAt(i), 16777619);
+  return () => {
+    h = Math.imul(h ^ (h >>> 15), 2246822507);
+    h = Math.imul(h ^ (h >>> 13), 3266489909);
+    return ((h ^= h >>> 16) >>> 0) / 4294967296;
+  };
+}
 
 // ---------- SITE MAP RENDERER (shared) ----------
 const SiteMap = (function () {
@@ -316,6 +418,129 @@ const STATUS_TEXT = {
   inactive: '○ Inactive'
 };
 
+// ---------- UPTIME CARD (reliability section) ----------
+// Illustrative 90-day history per district, seeded so it's stable between visits.
+(function () {
+  const rowsEl = document.getElementById('uptimeRows');
+  const card = document.getElementById('uptime');
+  const tip = document.getElementById('uptimeTip');
+  const more = document.getElementById('uptimeMore');
+  if (!rowsEl || !card || !tip) return;
+
+  const DAYS = 90;
+  const DISTRICTS = ['serian', 'sri aman', 'kapit', 'miri'];
+  const CHECK = '<svg class="uptime__check" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8"/><path d="M4.6 8.2l2.2 2.2 4.6-4.8"/></svg>';
+  const today = new Date();
+  const fmtDate = (d) => d.toLocaleDateString('en-MY', { day: 'numeric', month: 'short' });
+
+  function history(name) {
+    const r = seeded('uptime:' + name);
+    const days = [];
+    for (let i = 0; i < DAYS; i++) {
+      const roll = r();
+      if (roll < 0.012) days.push({ state: 'outage', minutes: 35 + Math.round(r() * 55) });
+      else if (roll < 0.06) days.push({ state: 'degraded', minutes: 6 + Math.round(r() * 20) });
+      else days.push({ state: 'ok', minutes: 0 });
+    }
+    return days;
+  }
+
+  function describe(day) {
+    if (day.state === 'outage') return 'Outage · ' + day.minutes + ' min';
+    if (day.state === 'degraded') return 'Heavy rain · slower for ' + day.minutes + ' min';
+    return 'No downtime';
+  }
+
+  const frag = document.createDocumentFragment();
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const counters = [];
+
+  DISTRICTS.forEach((name, rowIndex) => {
+    const days = history(name);
+    const down = days.reduce((sum, d) => sum + (d.state === 'outage' ? d.minutes : d.minutes * 0.25), 0);
+    const pct = 100 - (down / (DAYS * 1440)) * 100;
+    const sites = SITES.filter((s) => s.district === name).length;
+
+    const row = document.createElement('div');
+    row.className = 'uptime__row';
+    row.style.setProperty('--row', rowIndex);
+    row.innerHTML =
+      '<div class="uptime__label"><span>' + CHECK + name + ' <small>' + sites + ' sites</small></span>' +
+      '<span class="uptime__pct mono">' + (reduced ? pct.toFixed(2) : '0.00') + '% uptime</span></div>' +
+      '<div class="uptime__bars" role="img" aria-label="' + name + ': ' + pct.toFixed(2) + '% uptime over the last 90 days"></div>' +
+      '<div class="uptime__axis mono"><span>90 days ago</span><span>Today</span></div>';
+
+    const bars = row.querySelector('.uptime__bars');
+    days.forEach((day, i) => {
+      const bar = document.createElement('i');
+      if (day.state !== 'ok') bar.className = 'is-' + day.state;
+      bar.style.setProperty('--i', i);
+      const date = new Date(today);
+      date.setDate(today.getDate() - (DAYS - 1 - i));
+      bar.dataset.tip = '<b>' + fmtDate(date) + '</b><span>' + describe(day) + '</span>';
+      bars.appendChild(bar);
+    });
+    counters.push({ el: row.querySelector('.uptime__pct'), value: pct, delay: rowIndex * 140 });
+    frag.appendChild(row);
+  });
+  rowsEl.appendChild(frag);
+
+  // Play the bars and count the percentages up once the card is well into view.
+  const COUNT_MS = 1100;
+  function countUp(c, start) {
+    const t = Math.min(Math.max((performance.now() - start - c.delay) / COUNT_MS, 0), 1);
+    const eased = 1 - Math.pow(1 - t, 4);
+    c.el.textContent = (c.value * eased).toFixed(2) + '% uptime';
+    if (t < 1) requestAnimationFrame(() => countUp(c, start));
+  }
+
+  function play() {
+    card.classList.add('is-live');
+    if (reduced) {
+      card.classList.add('is-done');
+      return;
+    }
+    const start = performance.now();
+    counters.forEach((c) => countUp(c, start));
+    // Longest bar delay + its transition, then drop the stagger so hovers feel instant.
+    setTimeout(() => card.classList.add('is-done'), (DISTRICTS.length - 1) * 140 + (DAYS - 1) * 8 + 500);
+  }
+
+  function check() {
+    const r = card.getBoundingClientRect();
+    if (r.top < window.innerHeight * 0.7 && r.bottom > 0) {
+      window.removeEventListener('scroll', check);
+      window.removeEventListener('resize', check);
+      play();
+    }
+  }
+  window.addEventListener('scroll', check, { passive: true });
+  window.addEventListener('resize', check);
+  check();
+
+  // One shared tooltip that follows the hovered bar.
+  rowsEl.addEventListener('mouseover', (e) => {
+    const bar = e.target.closest('.uptime__bars i');
+    if (!bar) return;
+    const cr = card.getBoundingClientRect();
+    const br = bar.getBoundingClientRect();
+    tip.innerHTML = bar.dataset.tip;
+    tip.classList.toggle('is-moving', tip.classList.contains('is-open'));
+    tip.classList.add('is-open');
+    const half = tip.offsetWidth / 2 + 8;
+    const x = Math.min(Math.max(br.left + br.width / 2 - cr.left, half), cr.width - half);
+    tip.style.left = x + 'px';
+    tip.style.top = (br.top - cr.top) + 'px';
+  });
+  rowsEl.addEventListener('mouseleave', () => tip.classList.remove('is-open', 'is-moving'));
+  tip.hidden = false;
+
+  if (more) more.addEventListener('click', () => {
+    const open = document.getElementById('demoOpen');
+    if (open) open.click();
+  });
+})();
+
 // ---------- SITE MAP (on the page) ----------
 (function () {
   const svg = document.getElementById('sitemapSvg');
@@ -344,8 +569,7 @@ const STATUS_TEXT = {
     card.style.setProperty('--tx', px < 28 ? '-12%' : px > 72 ? '-88%' : '-50%');
     card.style.setProperty('--ty', py < 38 ? '16px' : 'calc(-100% - 16px)');
 
-    card.classList.add('is-swapping');
-    setTimeout(() => {
+    const fill = () => {
       nameEl.textContent = site.site;
       locEl.textContent = site.location + ', ' + site.district;
       statusEl.textContent = STATUS_TEXT[site.status] || site.status;
@@ -354,8 +578,8 @@ const STATUS_TEXT = {
       card.style.left = px + '%';
       card.style.top = py + '%';
       card.hidden = false;
-      card.classList.remove('is-swapping');
-    }, card.hidden ? 0 : 200);
+    };
+    if (card.hidden) fill(); else swapContent(card, fill);
   }
 
   // Auto-cycle through a spread of sites while the map is on screen.
@@ -405,16 +629,19 @@ const STATUS_TEXT = {
   const summaryEl = $('dashSummary');
   const updatedEl = $('dashUpdated');
   const ctaEl = $('dashCta');
+  const detailEl = $('dashDetail');
+  const pill = filtersEl.querySelector('.dash__pill');
 
-  function seeded(str) {
-    let h = 2166136261;
-    for (let i = 0; i < str.length; i++) h = Math.imul(h ^ str.charCodeAt(i), 16777619);
-    return () => {
-      h = Math.imul(h ^ (h >>> 15), 2246822507);
-      h = Math.imul(h ^ (h >>> 13), 3266489909);
-      return ((h ^= h >>> 16) >>> 0) / 4294967296;
-    };
+  // Tabs sliding: move the pill under the active filter.
+  function movePill(animate) {
+    const btn = filtersEl.querySelector('.dash__filter.is-on');
+    if (!pill || !btn) return;
+    if (!animate) pill.style.transition = 'none';
+    pill.style.transform = 'translateX(' + btn.offsetLeft + 'px)';
+    pill.style.width = btn.offsetWidth + 'px';
+    if (!animate) { void pill.offsetWidth; pill.style.transition = ''; }
   }
+
   const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
   const metrics = {};
@@ -481,7 +708,9 @@ const STATUS_TEXT = {
     const row = rows[node.site.code];
     row.btn.classList.add('is-active');
     if (fromMap) row.li.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    renderDetail();
+    // First fill is instant; switching sites swaps the detail card's text.
+    if (detailEl && detailEl.dataset.filled) swapContent(detailEl, renderDetail);
+    else { renderDetail(); if (detailEl) detailEl.dataset.filled = '1'; }
   }
 
   function renderDetail() {
@@ -509,7 +738,11 @@ const STATUS_TEXT = {
 
   function applyFilter(f) {
     filter = f;
-    filtersEl.querySelectorAll('.dash__filter').forEach((b) => b.classList.toggle('is-on', b.dataset.filter === f));
+    filtersEl.querySelectorAll('.dash__filter').forEach((b) => {
+      b.classList.toggle('is-on', b.dataset.filter === f);
+      b.setAttribute('aria-pressed', b.dataset.filter === f ? 'true' : 'false');
+    });
+    movePill(!modal.hidden && modal.classList.contains('is-open'));
     let first = null;
     nodes.forEach((node) => {
       const show = f === 'all' || node.site.status === f;
@@ -548,16 +781,22 @@ const STATUS_TEXT = {
   function openModal() {
     lastFocus = document.activeElement;
     if (!built) build();
+    clearTimeout(modal._closeTimer);
     modal.hidden = false;
     document.body.classList.add('modal-open');
     applyFilter(filter);
+    void modal.offsetHeight;              // reflow so the scale-up transitions
+    modal.classList.add('is-open');       // modal open: scale up from 96%
     tick();
     timer = setInterval(tick, 1500);
     closeBtn.focus();
   }
 
   function closeModal() {
-    modal.hidden = true;
+    if (modal.hidden) return;
+    modal.classList.remove('is-open');   // modal close: quicker dip back down
+    clearTimeout(modal._closeTimer);
+    modal._closeTimer = setTimeout(() => { modal.hidden = true; }, cssMs('--modal-close-dur', 150));
     document.body.classList.remove('modal-open');
     clearInterval(timer);
     timer = null;
