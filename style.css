@@ -54,8 +54,6 @@
   --tt-in-dur: 150ms;         /* tooltip */
   --tt-out-dur: 50ms;
   --tt-delay: 80ms;
-  --toast-open: 350ms;        /* toast */
-  --toast-close: 250ms;
   --digit-dur: 500ms;         /* number pop-in */
   --digit-step: 70ms;
   --digit-ease: cubic-bezier(0.34, 1.45, 0.64, 1);
@@ -64,6 +62,8 @@
   --revert-dur: 280ms;
   --panel-open-dur: 400ms;    /* panel reveal */
   --panel-close-dur: 350ms;
+  --morph-dur: 380ms;         /* postcode boxes → success tick */
+  --success:   #1f9d55;
   --font:      'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --mono:      'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   --nav-h:     64px;
@@ -99,6 +99,7 @@
     --shadow-lg: 0 24px 80px rgba(0,0,0,.6);
     --backdrop:  rgba(0,0,0,.6);
     --hero-img-filter: none;             /* headernight.jpg is already a night scene */
+    --success:   #2bb567;
     --connected: #ededea;
     --pending:   #8f8d88;
     --inactive:  #4a4946;
@@ -512,20 +513,23 @@ button { font: inherit; }
 }
 /* Text states swap: old site exits up with blur, next one enters from below */
 .sitemap__card > span,
-.dash__detail > * {
+.dash__detail > *,
+.cta__submit > .btn__label {
   transition:
     transform var(--text-swap-dur) ease-in-out,
     filter    var(--text-swap-dur) ease-in-out,
     opacity   var(--text-swap-dur) ease-in-out;
 }
 .sitemap__card.is-exit > span,
-.dash__detail.is-exit > * {
+.dash__detail.is-exit > *,
+.cta__submit.is-exit > .btn__label {
   transform: translateY(calc(var(--text-swap-y) * -1));
   filter: blur(var(--text-swap-blur));
   opacity: 0;
 }
 .sitemap__card.is-enter-start > span,
-.dash__detail.is-enter-start > * {
+.dash__detail.is-enter-start > *,
+.cta__submit.is-enter-start > .btn__label {
   transform: translateY(var(--text-swap-y));
   filter: blur(var(--text-swap-blur));
   opacity: 0;
@@ -612,25 +616,76 @@ article.tile:hover .tile__box { background: var(--surface-2); }
 .cta__title { font-size: 1.6rem; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 12px; }
 .cta__text p { font-size: 14px; opacity: .85; max-width: 300px; }
 .cta__form { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
-.cta__input {
-  width: 100%;
-  height: 34px;
-  padding: 0 16px;
-  font: inherit;
-  font-size: 13px;
+/* Postcode: five OTP-style digit boxes */
+.otp { position: relative; display: flex; gap: 8px; }
+.otp__box {
+  width: 44px;
+  height: 52px;
+  padding: 0;
+  font-family: var(--mono);
+  font-size: 20px;
+  text-align: center;
   color: #fff;
-  background: rgba(255,255,255,.14);
-  border: none;
-  border-radius: 999px;
+  caret-color: #fff;
+  background: rgba(255,255,255,.12);
+  border: 1px solid transparent;
+  border-radius: 10px;
   outline: none;
+  transition:
+    border-color 150ms ease-out,
+    background .2s,
+    color .15s,
+    opacity .2s,
+    border-radius var(--morph-dur) var(--ease-out-expo),
+    transform var(--morph-dur) var(--ease-out-expo);
 }
-.cta__input::placeholder { color: rgba(255,255,255,.7); }
-.cta__input:focus { background: rgba(255,255,255,.22); }
+.otp__box:focus { background: rgba(255,255,255,.2); border-color: rgba(255,255,255,.55); }
+.otp__box.is-filled { background: rgba(255,255,255,.2); }
+.otp__box.is-filled:not(:focus) { transform: translateY(-1px); }
 
-/* Error state shake */
-.cta__input { border: 1px solid transparent; transition: border-color 150ms ease-out, background .2s; }
-.cta__input.is-error { border-color: rgba(255,255,255,.75); transition: border-color var(--revert-dur) ease-out; }
-.cta__input.is-shaking {
+/* Success: boxes slide together into one circle, which turns into a green tick */
+.otp.is-morphing { pointer-events: none; }
+.otp.is-morphing .otp__box {
+  transform: translateX(var(--dx, 0)) scale(.92);
+  border-radius: 26px;
+  color: transparent;
+  caret-color: transparent;
+  border-color: transparent;
+}
+.otp.is-done .otp__box { opacity: 0; }
+.otp__done {
+  position: absolute;
+  left: 0;                 /* lines up with the left edge of the Success button */
+  top: 50%;
+  width: 52px;
+  height: 52px;
+  margin-top: -26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--success);
+  opacity: 0;
+  transform: scale(.6);
+  pointer-events: none;
+  transition: opacity .18s ease-out, transform .45s var(--digit-ease);
+}
+.otp.is-done .otp__done { opacity: 1; transform: scale(1); }
+.otp__done svg { width: 28px; height: 28px; }
+.otp__done path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  transition: stroke-dashoffset .38s var(--ease-out-expo) .14s;
+}
+.otp.is-done .otp__done path { stroke-dashoffset: 0; }
+
+/* Error state shake (the whole row of boxes shakes) */
+.otp.is-error .otp__box { border-color: rgba(255,255,255,.75); transition: border-color var(--revert-dur) ease-out; }
+.otp.is-shaking {
   animation: input-shake calc(var(--shake-a) * 2 + var(--shake-b) * 2) linear;
 }
 @keyframes input-shake {
@@ -641,7 +696,7 @@ article.tile:hover .tile__box { background: var(--surface-2); }
   100%    { transform: translateX(0); }
 }
 .cta__error {
-  margin: -4px 0 0 16px;
+  margin: -2px 0 0 2px;
   font-size: 12px;
   color: rgba(255,255,255,.8);
   opacity: 0;
@@ -955,41 +1010,16 @@ article.tile:hover .tile__box { background: var(--surface-2); }
 .js .t-stagger.is-shown .hero__line { opacity: 1; transform: none; filter: none; }
 .hero__actions.hero__line { display: flex; }
 
-/* Toast: rises from the bottom with fade, blur and slight scale */
-.toast {
-  position: fixed;
-  left: 50%;
-  bottom: 24px;
-  z-index: 3000;
-  max-width: min(420px, calc(100vw - 32px));
-  padding: 12px 16px;
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--ink);
-  background: var(--card);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  pointer-events: none;
-  opacity: 0;
-  transform: translate(-50%, 16px) scale(.97);
-  filter: blur(2px);
-  transition:
-    opacity   var(--toast-close) var(--ease-out-expo),
-    transform var(--toast-close) var(--ease-out-expo),
-    filter    var(--toast-close) var(--ease-out-expo);
-}
-.toast.is-open {
-  opacity: 1;
-  transform: translate(-50%, 0) scale(1);
-  filter: none;
-  transition-duration: var(--toast-open);
-}
-.toast b { font-weight: 500; }
+/* Check availability: label swaps to a success state */
+.cta__submit .btn__label { display: inline-flex; align-items: center; gap: 6px; }
+.cta__submit.is-success { pointer-events: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 @media (prefers-reduced-motion: reduce) {
   .js .t-stagger .hero__line,
-  .toast, .mobile-menu, .uptime__tip,
+  .mobile-menu, .uptime__tip, .cta__submit > .btn__label,
   .sitemap__card > span, .dash__detail > * { transition: none !important; }
-  .tile__num .digit, .cta__input { animation: none !important; }
+  .tile__num .digit, .otp { animation: none !important; }
+  .otp__box, .otp__done, .otp__done path { transition: none !important; }
   .js .tile__num.has-digits .digit { opacity: 1; }
 }

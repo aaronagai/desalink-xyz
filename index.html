@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=14" />
+  <link rel="stylesheet" href="style.css?v=19" />
 </head>
 <body>
 
@@ -198,12 +198,22 @@
     <div class="cta__inner">
       <div class="cta__text">
         <h2 class="cta__title">Ready to connect?</h2>
-        <p>Check if Desalink is available in your area. Enter your village name, GPS coordinates or postcode and we'll reach out.</p>
+        <p>Check if Desalink is available in your area. Enter your 5-digit postcode and we'll reach out.</p>
       </div>
       <form class="order__form cta__form t-input-wrap" novalidate>
-        <input type="text" class="cta__input t-input" placeholder="Village or postcode *" aria-label="Village name, GPS coordinates or postcode" aria-describedby="ctaError" />
-        <span class="cta__error t-error-msg" id="ctaError">Enter a village name, GPS coordinates or postcode.</span>
-        <button type="submit" class="btn btn--light">Check availability</button>
+        <div class="otp t-input" id="postcode" role="group" aria-label="Postcode" aria-describedby="ctaError">
+          <input class="otp__box" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="postal-code" aria-label="Postcode digit 1 of 5" />
+          <input class="otp__box" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="Postcode digit 2 of 5" />
+          <input class="otp__box" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="Postcode digit 3 of 5" />
+          <input class="otp__box" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="Postcode digit 4 of 5" />
+          <input class="otp__box" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="Postcode digit 5 of 5" />
+          <span class="otp__done" aria-hidden="true">
+            <svg viewBox="0 0 28 28"><path d="M8 14.5l4.2 4.2L20.5 9.8" /></svg>
+          </span>
+        </div>
+        <span class="cta__error t-error-msg" id="ctaError">Enter your 5-digit postcode.</span>
+        <button type="submit" class="btn btn--light cta__submit"><span class="btn__label">Check availability</span></button>
+        <span class="sr-only" id="ctaStatus" role="status" aria-live="polite"></span>
       </form>
     </div>
   </section>
@@ -329,9 +339,10 @@
     </div>
   </div>
 
-  <!-- Toast (availability confirmation) -->
-  <div class="toast t-toast" id="toast" role="status" aria-live="polite"></div>
-
-  <script src="script.js?v=15"></script>
+  <!-- canvas-confetti (ISC licence): browser build, pinned with an integrity hash -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.js"
+          integrity="sha384-bopE5cbMjKUprmGnIRk2UdvCnHImrRLCtNW2uR6oDYqO+o3XWJeuIrWWxDzeDgNW"
+          crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+  <script src="script.js?v=19"></script>
 </body>
 </html>

@@ -207,50 +207,153 @@ function whenInView(el, fraction, fn) {
 })();
 
 // ---------- AVAILABILITY CHECK (STUB) ----------
+// Postcode entered in five OTP-style digit boxes; a valid submit fires a
+// green tick: the boxes morph into it, confetti bursts from it (canvas-confetti)
+// and the button swaps to "Success".
 (function () {
-  const toast = document.getElementById('toast');
-  let toastTimer = null;
+  const status = document.getElementById('ctaStatus');
 
-  function showToast(html) {
-    if (!toast) return;
-    toast.innerHTML = html;
-    toast.classList.add('is-open');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('is-open'), 5000);
+  function burstFrom(el) {
+    if (typeof window.confetti !== 'function') return; // CDN unavailable: skip quietly
+    const r = el.getBoundingClientRect();
+    const origin = {
+      x: (r.left + r.width / 2) / window.innerWidth,
+      y: (r.top + r.height / 2) / window.innerHeight
+    };
+    const base = { origin, zIndex: 2500, disableForReducedMotion: true };
+    window.confetti({ ...base, particleCount: 90, spread: 70, startVelocity: 42 });
+    window.confetti({ ...base, particleCount: 50, spread: 120, startVelocity: 28, scalar: 0.8, ticks: 180 });
   }
 
   document.querySelectorAll('.order__form').forEach((form) => {
-    const input = form.querySelector('input');
+    const group = form.querySelector('.otp');
+    const boxes = Array.from(form.querySelectorAll('.otp__box'));
+    const button = form.querySelector('button[type="submit"]');
+    if (!group || !boxes.length) return;
+
+    const value = () => boxes.map((b) => b.value).join('');
+    const refresh = () => boxes.forEach((b) => b.classList.toggle('is-filled', b.value !== ''));
+
+    // Spread a string of digits across the boxes starting at index i.
+    function fill(digits, i) {
+      for (const d of digits) {
+        if (i >= boxes.length) break;
+        boxes[i].value = boxes[i].dataset.prev = d;
+        i++;
+      }
+      refresh();
+      boxes[Math.min(i, boxes.length - 1)].focus();
+    }
+
+    boxes.forEach((box, i) => {
+      box.addEventListener('focus', () => { box.dataset.prev = box.value; box.select(); });
+      box.addEventListener('input', (e) => {
+        const digits = box.value.replace(/\D/g, '');
+        const deleting = e.inputType && e.inputType.startsWith('delete');
+        box.value = '';
+        if (digits) fill(digits, i);                  // one digit, or several from autofill
+        else if (!deleting) box.value = box.dataset.prev || ''; // rejected key: keep the old digit
+        box.dataset.prev = box.value;
+        refresh();
+        clearError();
+      });
+      box.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !box.value && i > 0) {
+          e.preventDefault();
+          boxes[i - 1].value = boxes[i - 1].dataset.prev = '';
+          boxes[i - 1].focus();
+          refresh();
+        } else if (e.key === 'ArrowLeft' && i > 0) {
+          e.preventDefault(); boxes[i - 1].focus();
+        } else if (e.key === 'ArrowRight' && i < boxes.length - 1) {
+          e.preventDefault(); boxes[i + 1].focus();
+        }
+      });
+      box.addEventListener('paste', (e) => {
+        const digits = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+        if (!digits) return;
+        e.preventDefault();
+        fill(digits, i);
+        clearError();
+      });
+    });
 
     function clearError() {
       clearTimeout(form._revertTimer);
       form.classList.remove('is-error');
-      input.classList.remove('is-error');
+      group.classList.remove('is-error');
     }
 
-    // Error state shake: shake, show the message, revert after a few seconds.
+    // Error state shake: shake the row, show the message, revert after a few seconds.
     function showError() {
       form.classList.add('is-error');
-      input.classList.add('is-error');
-      input.classList.remove('is-shaking');
-      void input.offsetWidth;
-      input.classList.add('is-shaking');
+      group.classList.add('is-error');
+      group.classList.remove('is-shaking');
+      void group.offsetWidth;
+      group.classList.add('is-shaking');
       const shakeMs = cssMs('--shake-a', 80) * 2 + cssMs('--shake-b', 60) * 2;
-      setTimeout(() => input.classList.remove('is-shaking'), shakeMs + 20);
+      setTimeout(() => group.classList.remove('is-shaking'), shakeMs + 20);
       clearTimeout(form._revertTimer);
       form._revertTimer = setTimeout(clearError, shakeMs + 3000);
-      input.focus();
+      (boxes.find((b) => !b.value) || boxes[0]).focus();
     }
 
-    input.addEventListener('input', clearError);
+    const tick = group.querySelector('.otp__done');
+    const label = button && button.querySelector('.btn__label');
+    const idleText = label ? label.textContent : '';
+
+    // Boxes slide left to where the tick sits (aligned with the button) and round
+    // off, then a green tick springs in.
+    function morphToTick(done) {
+      const g = group.getBoundingClientRect();
+      const cx = g.left + (tick ? tick.offsetWidth / 2 : 26);
+      boxes.forEach((b) => {
+        const r = b.getBoundingClientRect();
+        b.style.setProperty('--dx', (cx - (r.left + r.width / 2)) + 'px');
+      });
+      if (document.activeElement && group.contains(document.activeElement)) document.activeElement.blur();
+      group.classList.add('is-morphing');
+      setTimeout(() => {
+        group.classList.add('is-done');
+        boxes.forEach((b) => { b.value = b.dataset.prev = ''; }); // clear while hidden
+        refresh();
+        done();
+      }, REDUCED_MOTION ? 0 : cssMs('--morph-dur', 380));
+    }
+
+    // Reverse: tick shrinks away, then five empty boxes spread back out.
+    function morphBack() {
+      group.classList.remove('is-done');
+      setTimeout(() => group.classList.remove('is-morphing'), REDUCED_MOTION ? 0 : 180);
+    }
+
+    function showSuccess() {
+      if (button && label) {
+        button.style.minWidth = button.offsetWidth + 'px'; // keep the width steady while text swaps
+        button.classList.add('is-success');
+        swapContent(button, () => { label.textContent = 'Success'; });
+      }
+      morphToTick(() => burstFrom(tick || button || form));
+      if (status) status.textContent = 'Success. We will be in touch about postcode availability.';
+      clearTimeout(form._successTimer);
+      form._successTimer = setTimeout(() => {
+        morphBack();
+        if (button && label) {
+          swapContent(button, () => { label.textContent = idleText; });
+          button.classList.remove('is-success');
+          setTimeout(() => { button.style.minWidth = ''; }, 400);
+        }
+        if (status) status.textContent = '';
+      }, 3200);
+    }
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const val = input.value.trim();
-      if (!val) { showError(); return; }
+      const postcode = value();
+      if (!/^\d{5}$/.test(postcode)) { showError(); return; }
       clearError();
-      const safe = val.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-      showToast('<b>Thanks!</b> We\'ll check availability for “' + safe + '” and reply by WhatsApp or email within 24 hours.');
-      input.value = '';
+      showSuccess();
+      if (button) button.blur();
     });
   });
 })();
