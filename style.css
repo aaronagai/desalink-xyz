@@ -201,6 +201,15 @@ button { font: inherit; }
 }
 .ph span { font-family: var(--mono); font-size: 11px; letter-spacing: .02em; }
 .ph--square { width: 100%; aspect-ratio: 1 / 1; }
+.split__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  background: var(--surface);
+  border-radius: var(--radius);
+}
 
 /* ---------- NAVIGATION ---------- */
 .nav {
@@ -769,7 +778,7 @@ article.tile:hover .tile__box { background: var(--surface-2); }
   .split--reverse .split__text { order: 1; }
   .split--reverse .ph { order: 2; }
   .split__text { max-width: none; }
-  .ph--square { aspect-ratio: 4 / 3; }
+  .ph--square, .split__img { aspect-ratio: 4 / 3; }
   .sitemap { padding: 16px 12px 12px; }
   .sitemap__card { width: 170px; }
   .feature__text { order: -1; }
@@ -1022,4 +1031,64 @@ article.tile:hover .tile__box { background: var(--surface-2); }
   .tile__num .digit, .otp { animation: none !important; }
   .otp__box, .otp__done, .otp__done path { transition: none !important; }
   .js .tile__num.has-digits .digit { opacity: 1; }
+}
+
+/* ---------- MOBILE POLISH (phones and small tablets only) ---------- */
+@media (max-width: 900px) {
+  /* Let grid columns shrink below their content's natural width, so the
+     uptime card can't push the page wider than the screen */
+  .split > *, .feature > * { min-width: 0; }
+
+  /* Tap targets: 44px minimum (Apple HIG) */
+  .btn { height: 44px; padding: 0 20px; font-size: 14px; }
+  .nav__logo { display: inline-flex; align-items: center; height: 44px; }
+  .nav__hamburger { width: 44px; height: 44px; margin-right: -6px; }
+  .dash__close { width: 44px; height: 44px; }
+  /* Invisible hit area around small text links, without moving their underline */
+  .textlink, .uptime__more { position: relative; }
+  .textlink::after, .uptime__more::after { content: ""; position: absolute; inset: -14px -8px; }
+  .footer__col { gap: 0; }
+  .footer__col--entities { gap: 10px; }  /* company details keep their spacing */
+  .footer__col h4 { margin-bottom: 4px; }
+  .footer__col a,
+  .footer__bottom a { display: inline-flex; align-items: center; min-height: 44px; }
+
+  /* Readability */
+  .uptime__axis { font-size: 11px; }
+
+  /* The placeholder label collides with the footer's bottom row on phones */
+  .ph--footer span { display: none; }
+
+  /* Dashboard: filter labels on one line; the whole panel scrolls as one page
+     so the site list gets room instead of being squeezed under the map */
+  .dash__filter { white-space: nowrap; padding: 0 10px; }
+  .dash__body { display: block; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .dash__map { max-height: none; }
+  .dash__side { min-height: 0; }
+  .dash__list { overflow: visible; }
+}
+
+@media (max-width: 560px) {
+  /* Headline: drop the desktop line break and balance the wrap */
+  .hero__title br { display: none; }
+  .hero__title, .hero__sub { text-wrap: balance; }
+
+  /* Map: show the village card under the map instead of covering the dots */
+  .sitemap__card {
+    position: static;
+    width: auto;
+    margin-top: 12px;
+    transform: none !important;
+    transition: opacity .25s var(--ease-out-expo);
+  }
+
+  /* How it works: shorter step cards */
+  .tile__box--tall { aspect-ratio: 16 / 7; }
+}
+
+@media (max-width: 420px) {
+  /* Uptime card: tighter padding and bar gaps so 90 bars fit at 320px */
+  .uptime { padding: 16px 14px 12px; }
+  .uptime__bars { gap: 1px; }
+  .uptime__bars i { min-width: 0; }
 }
