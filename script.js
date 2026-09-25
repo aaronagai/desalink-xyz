@@ -35,39 +35,39 @@ document.documentElement.classList.add('js');
 })();
 
 // ---------- SCROLL REVEAL ----------
+// Reveals anything that has reached the lower part of the viewport (or is
+// above it). Uses plain scroll/resize checks rather than IntersectionObserver,
+// so content can never get stuck invisible.
 (function () {
-  const targets = document.querySelectorAll(
-    '.panel__overlay, .steps__card, .order__plan, .support__card'
-  );
+  let pending = Array.from(document.querySelectorAll('.reveal'));
+  if (!pending.length) return;
 
-  const style = document.createElement('style');
-  style.textContent = `
-    .panel__overlay, .steps__card, .order__plan, .support__card {
-      opacity: 0;
-      translate: 0 24px;
-      transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), translate 0.9s cubic-bezier(0.4,0,0.2,1);
+  function check() {
+    const limit = window.innerHeight * 0.92;
+    pending = pending.filter((el) => {
+      if (el.getBoundingClientRect().top < limit) {
+        el.classList.add('revealed');
+        return false;
+      }
+      return true;
+    });
+    if (!pending.length) {
+      window.removeEventListener('scroll', check);
+      window.removeEventListener('resize', check);
     }
-    .revealed { opacity: 1 !important; translate: 0 0 !important; }
-    .steps__card:nth-child(2) { transition-delay: 0.12s; }
-    .steps__card:nth-child(3) { transition-delay: 0.24s; }
-    .order__plan:nth-child(2) { transition-delay: 0.1s; }
-    .order__plan:nth-child(3) { transition-delay: 0.2s; }
-  `;
-  document.head.appendChild(style);
+  }
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed');
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.15 }
-  );
-
-  targets.forEach((el) => observer.observe(el));
+  window.addEventListener('scroll', check, { passive: true });
+  window.addEventListener('resize', check);
+  window.addEventListener('load', () => {
+    check();
+    // Safety net: never leave content hidden, whatever happens above.
+    setTimeout(() => {
+      pending.forEach((el) => el.classList.add('revealed'));
+      pending = [];
+    }, 3000);
+  });
+  check();
 })();
 
 // ---------- AVAILABILITY CHECK (STUB) ----------
