@@ -590,6 +590,7 @@ a.tile:hover .tile__box,
 article.tile:hover .tile__box { background: var(--surface-2); }
 .tile__box--tall  { aspect-ratio: 4 / 3; }
 .tile__box--short { aspect-ratio: 16 / 7; }
+.tile__box--square { aspect-ratio: 1 / 1; }
 .tile__box--img   { overflow: hidden; }
 .tile__box--img img {
   width: 100%;
