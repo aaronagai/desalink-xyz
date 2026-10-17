@@ -302,11 +302,12 @@ function whenInView(el, fraction, fn) {
     const label = button && button.querySelector('.btn__label');
     const idleText = label ? label.textContent : '';
 
-    // Boxes slide left to where the tick sits (aligned with the button) and round
-    // off, then a green tick springs in.
+    // Boxes slide to where the tick sits (left on desktop, centred on phones)
+    // and round off, then a green tick springs in.
     function morphToTick(done) {
       const g = group.getBoundingClientRect();
-      const cx = g.left + (tick ? tick.offsetWidth / 2 : 26);
+      const t = tick && tick.getBoundingClientRect();
+      const cx = t ? t.left + t.width / 2 : g.left + 26;
       boxes.forEach((b) => {
         const r = b.getBoundingClientRect();
         b.style.setProperty('--dx', (cx - (r.left + r.width / 2)) + 'px');

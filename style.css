@@ -787,6 +787,12 @@ article.tile:hover .tile__box { background: var(--surface-2); }
   .section { padding-top: 48px; padding-bottom: 48px; }
 
   .cta__inner { grid-template-columns: 1fr; gap: 24px; padding: 64px 24px; }
+  /* Stacked CTA: centre the heading, copy, digit boxes and button */
+  .cta__text { text-align: center; }
+  .cta__text p { margin-inline: auto; text-wrap: balance; }
+  .cta__form { align-items: center; }
+  .cta__error { margin-left: 0; text-align: center; }
+  .otp__done { left: 50%; margin-left: -26px; }
   .footer__cols { grid-template-columns: 1fr 1fr; }
   .footer__col--entities { grid-column: 1 / -1; }
   .footer__tm { margin-left: 0; }
