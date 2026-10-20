@@ -1,8 +1,17 @@
 {
-  "version": 2,
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/.*", "dest": "/index.html" }
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.desalink.xyz" }],
+      "destination": "https://desalink.xyz/:path*",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(favicon.ico|favicon.svg|favicon-32.png|favicon-96.png|apple-touch-icon.png|icon-192.png|icon-512.png|icon-maskable-512.png)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+    }
   ]
 }
-

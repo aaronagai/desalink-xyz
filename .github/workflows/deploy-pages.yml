@@ -25,7 +25,7 @@ jobs:
       - name: Prepare site root
         run: |
           mkdir -p _site
-          cp index.html style.css script.js desalinklogo.svg _site/
+          cp index.html 404.html style.css script.js desalinklogo.svg robots.txt sitemap.xml site.webmanifest favicon.* favicon-*.png apple-touch-icon.png icon-*.png _site/
           cp -r images _site/
 
       - uses: actions/upload-pages-artifact@v3
