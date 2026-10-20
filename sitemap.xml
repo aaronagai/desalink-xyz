@@ -1,10 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://desalink.xyz/</loc>
     <lastmod>2026-10-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="en-MY" href="https://desalink.xyz/" />
+    <xhtml:link rel="alternate" hreflang="ms-MY" href="https://desalink.xyz/ms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://desalink.xyz/" />
     <image:image><image:loc>https://desalink.xyz/images/header.jpg</image:loc></image:image>
-    <image:image><image:loc>https://desalink.xyz/images/install.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://desalink.xyz/ms</loc>
+    <lastmod>2026-10-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="en-MY" href="https://desalink.xyz/" />
+    <xhtml:link rel="alternate" hreflang="ms-MY" href="https://desalink.xyz/ms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://desalink.xyz/" />
+  </url>
+  <url>
+    <loc>https://desalink.xyz/starlink-price-malaysia</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://desalink.xyz/starlink-for-longhouses</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://desalink.xyz/starlink-for-business</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://desalink.xyz/starlink-kuching</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://desalink.xyz/starlink-miri</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://desalink.xyz/starlink-sibu</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://desalink.xyz/starlink-bintulu</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://desalink.xyz/starlink-kapit</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://desalink.xyz/starlink-baram</loc>
+    <lastmod>2026-10-20</lastmod>
   </url>
 </urlset>

@@ -10,6 +10,9 @@
   <meta name="description" content="Authorised Starlink installer in Sarawak, Malaysia. We supply, install and support Starlink satellite internet for homes, longhouses and businesses, from Kuching to Miri." />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <link rel="canonical" href="https://desalink.xyz/" />
+  <link rel="alternate" hreflang="en-MY" href="https://desalink.xyz/" />
+  <link rel="alternate" hreflang="ms-MY" href="https://desalink.xyz/ms" />
+  <link rel="alternate" hreflang="x-default" href="https://desalink.xyz/" />
   <meta name="google-site-verification" content="Izfyj8FOG2su069RhrhrCEtWK3-_dJ0GHVOoo1kOlt4" />
 
   <meta property="og:type" content="website" />
@@ -100,7 +103,10 @@
       "@id": "https://desalink.xyz/#website",
       "url": "https://desalink.xyz/",
       "name": "Desalink",
-      "inLanguage": "en-MY",
+      "inLanguage": [
+        "en-MY",
+        "ms-MY"
+      ],
       "publisher": {
         "@id": "https://desalink.xyz/#business"
       }
@@ -122,7 +128,15 @@
           "name": "Which parts of Sarawak do you install in?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "We install across Sarawak: Kuching, Samarahan, Serian, Sri Aman, Betong, Sarikei, Sibu, Mukah, Kapit, Bintulu, Miri, Limbang and the longhouses of the Baram and Belaga. If your site is elsewhere in Malaysia, get in touch and we'll tell you what's possible."
+            "text": "We install across Sarawak, including Kuching, Samarahan, Serian, Sri Aman, Betong, Sarikei, Sibu, Mukah, Kapit, Bintulu, Miri, Limbang and the longhouses of the Baram and Belaga. If your site is elsewhere in Malaysia, get in touch and we'll tell you what's possible."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much does Starlink cost in Malaysia?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Starlink sets the hardware and plan prices. As of mid-2026 the Standard kit is RM1,600 and residential plans start at RM135 a month. Installation is quoted after a quick site check. See our Starlink price guide for the full breakdown."
           }
         },
         {
@@ -165,19 +179,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=25" />
+  <link rel="stylesheet" href="/style.css?v=26" />
 </head>
 <body>
 
   <!-- ====== NAVIGATION ====== -->
   <nav class="nav" id="navbar">
-    <a href="/" class="nav__logo"><img src="desalinklogo.svg" alt="Desalink" class="nav__logo-img" /></a>
+    <a href="/" class="nav__logo"><img src="/desalinklogo.svg" alt="Desalink" class="nav__logo-img" /></a>
     <div class="nav__links">
       <a href="#reliable">Service</a>
       <a href="#fleet">Terminal</a>
       <a href="#how-it-works">How it works</a>
       <a href="#faq">FAQ</a>
       <a href="#support">Support</a>
+      <a href="/ms" hreflang="ms" lang="ms" class="nav__lang">BM</a>
     </div>
     <a href="#order" class="btn btn--dark nav__cta">Check availability</a>
     <button class="nav__hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
@@ -194,6 +209,7 @@
     <a href="#faq" class="mobile-menu__link">FAQ</a>
     <a href="#order" class="mobile-menu__link">Order</a>
     <a href="#support" class="mobile-menu__link">Support</a>
+    <a href="/ms" hreflang="ms" lang="ms" class="mobile-menu__link">Bahasa Malaysia</a>
   </div>
 
   <main>
@@ -213,8 +229,8 @@
       </div>
     </section>
     <picture>
-      <source srcset="images/headernight.jpg" media="(prefers-color-scheme: dark)" />
-      <img class="hero__img" src="images/header.jpg" width="1731" height="909" fetchpriority="high"
+      <source srcset="/images/headernight.jpg" media="(prefers-color-scheme: dark)" />
+      <img class="hero__img" src="/images/header.jpg" width="1731" height="909" fetchpriority="high"
            alt="Painting of limestone pinnacles rising from rainforest in Sarawak" />
     </picture>
 
@@ -314,19 +330,19 @@
       </div>
       <div class="tiles tiles--3">
         <article class="tile reveal">
-          <div class="tile__box tile__box--square tile__box--img"><img src="images/consult.jpg" width="900" height="599" loading="lazy" decoding="async" alt="Two engineers in hard hats reviewing site plans"></div>
+          <div class="tile__box tile__box--square tile__box--img"><img src="/images/consult.jpg" width="900" height="599" loading="lazy" decoding="async" alt="Two engineers in hard hats reviewing site plans"></div>
           <span class="tile__label">Consultation</span>
           <h3>We assess your site and recommend the right plan</h3>
           <span class="meta">Step 01 <i></i> No technical knowledge needed</span>
         </article>
         <article class="tile reveal">
-          <div class="tile__box tile__box--square tile__box--img"><img src="images/install.jpg" width="900" height="900" loading="lazy" decoding="async" alt="Technician mounting a Starlink dish on a house"></div>
+          <div class="tile__box tile__box--square tile__box--img"><img src="/images/install.jpg" width="900" height="900" loading="lazy" decoding="async" alt="Technician mounting a Starlink dish on a house"></div>
           <span class="tile__label">Installation</span>
           <h3>Certified technicians handle mounting, cabling and setup</h3>
           <span class="meta">Step 02 <i></i> However remote</span>
         </article>
         <article class="tile reveal">
-          <div class="tile__box tile__box--square tile__box--img"><img src="images/support.jpg" width="900" height="675" loading="lazy" decoding="async" alt="Technician troubleshooting a network rack on a laptop"></div>
+          <div class="tile__box tile__box--square tile__box--img"><img src="/images/support.jpg" width="900" height="675" loading="lazy" decoding="async" alt="Technician troubleshooting a network rack on a laptop"></div>
           <span class="tile__label">Support</span>
           <h3>Local after-sales support, troubleshooting and plan management</h3>
           <span class="meta">Step 03 <i></i> Ongoing</span>
@@ -345,8 +361,48 @@
         </p>
         <p><a href="https://www.spacex.com" target="_blank" rel="noopener" class="textlink">Learn more at spacex.com</a></p>
       </div>
-      <img class="split__img reveal" src="images/spacex.jpg" width="1000" height="1000" loading="lazy" decoding="async"
+      <img class="split__img reveal" src="/images/spacex.jpg" width="1000" height="1000" loading="lazy" decoding="async"
            alt="Painting looking down on a Starship rocket lifting off at night through clouds of exhaust" />
+    </section>
+
+    <!-- ====== AREAS ====== -->
+    <section class="section" id="areas">
+      <div class="section__head">
+        <h2 class="h2">Starlink installation across Sarawak</h2>
+        <a href="/starlink-price-malaysia" class="textlink">What it costs</a>
+      </div>
+      <div class="tiles tiles--3">
+        <a class="tile reveal" href="/starlink-kuching">
+          <div class="tile__box tile__box--short"><span class="tile__num tile__num--sm">Kuching</span></div>
+          <h3>Starlink in Kuching</h3>
+          <span class="meta">Kuching · Bau · Lundu · Serian</span>
+        </a>
+        <a class="tile reveal" href="/starlink-miri">
+          <div class="tile__box tile__box--short"><span class="tile__num tile__num--sm">Miri</span></div>
+          <h3>Starlink in Miri</h3>
+          <span class="meta">Miri · Niah · Sibuti · Marudi</span>
+        </a>
+        <a class="tile reveal" href="/starlink-sibu">
+          <div class="tile__box tile__box--short"><span class="tile__num tile__num--sm">Sibu</span></div>
+          <h3>Starlink in Sibu</h3>
+          <span class="meta">Sibu · Kanowit · Sarikei · Julau</span>
+        </a>
+        <a class="tile reveal" href="/starlink-bintulu">
+          <div class="tile__box tile__box--short"><span class="tile__num tile__num--sm">Bintulu</span></div>
+          <h3>Starlink in Bintulu</h3>
+          <span class="meta">Bintulu · Tatau · Sebauh</span>
+        </a>
+        <a class="tile reveal" href="/starlink-kapit">
+          <div class="tile__box tile__box--short"><span class="tile__num tile__num--sm">Kapit</span></div>
+          <h3>Starlink in Kapit</h3>
+          <span class="meta">Kapit · Song · Belaga</span>
+        </a>
+        <a class="tile reveal" href="/starlink-baram">
+          <div class="tile__box tile__box--short"><span class="tile__num tile__num--sm">Baram</span></div>
+          <h3>Starlink in Baram</h3>
+          <span class="meta">Marudi · Long Lama · Long San</span>
+        </a>
+      </div>
     </section>
 
     <!-- ====== FAQ ====== -->
@@ -359,15 +415,19 @@
       <div class="faq__list">
         <details class="faq__item">
           <summary class="faq__q">Is Starlink available in Malaysia?<span class="faq__icon" aria-hidden="true"></span></summary>
-          <div class="faq__a"><p>Yes. Starlink is licensed in Malaysia and works across the whole country, including the interior of Sarawak where fibre and mobile coverage don&#x27;t reach. All you need is a clear view of the sky.</p></div>
+          <div class="faq__a"><p>Yes. Starlink is licensed in Malaysia and works across the whole country, including the interior of Sarawak where fibre and mobile coverage don't reach. All you need is a clear view of the sky.</p></div>
         </details>
         <details class="faq__item">
           <summary class="faq__q">Which parts of Sarawak do you install in?<span class="faq__icon" aria-hidden="true"></span></summary>
-          <div class="faq__a"><p>We install across Sarawak: Kuching, Samarahan, Serian, Sri Aman, Betong, Sarikei, Sibu, Mukah, Kapit, Bintulu, Miri, Limbang and the longhouses of the Baram and Belaga. If your site is elsewhere in Malaysia, get in touch and we&#x27;ll tell you what&#x27;s possible.</p></div>
+          <div class="faq__a"><p>We install across Sarawak, including <a href="/starlink-kuching">Kuching</a>, Samarahan, Serian, Sri Aman, Betong, Sarikei, <a href="/starlink-sibu">Sibu</a>, Mukah, <a href="/starlink-kapit">Kapit</a>, <a href="/starlink-bintulu">Bintulu</a>, <a href="/starlink-miri">Miri</a>, Limbang and the longhouses of the <a href="/starlink-baram">Baram</a> and Belaga. If your site is elsewhere in Malaysia, get in touch and we'll tell you what's possible.</p></div>
+        </details>
+        <details class="faq__item">
+          <summary class="faq__q">How much does Starlink cost in Malaysia?<span class="faq__icon" aria-hidden="true"></span></summary>
+          <div class="faq__a"><p>Starlink sets the hardware and plan prices. As of mid-2026 the Standard kit is RM1,600 and residential plans start at RM135 a month. Installation is quoted after a quick site check. See our <a href="/starlink-price-malaysia">Starlink price guide</a> for the full breakdown.</p></div>
         </details>
         <details class="faq__item">
           <summary class="faq__q">How long does a Starlink installation take?<span class="faq__icon" aria-hidden="true"></span></summary>
-          <div class="faq__a"><p>Most on-site installations are completed within 2–4 hours. Once you confirm your order, our certified technicians can usually be on site within 24–48 hours. Multi-site rollouts are scheduled around your project&#x27;s scope.</p></div>
+          <div class="faq__a"><p>Most on-site installations are completed within 2–4 hours. Once you confirm your order, our certified technicians can usually be on site within 24–48 hours. Multi-site rollouts are scheduled around your project's scope.</p></div>
         </details>
         <details class="faq__item">
           <summary class="faq__q">Does Starlink work in heavy rain?<span class="faq__icon" aria-hidden="true"></span></summary>
@@ -375,7 +435,7 @@
         </details>
         <details class="faq__item">
           <summary class="faq__q">Can you set up Starlink for schools, clinics, plantations or multiple villages?<span class="faq__icon" aria-hidden="true"></span></summary>
-          <div class="faq__a"><p>Yes. We plan and install multi-site rollouts and track uptime, bandwidth and hardware status for every site from the Desalink Terminal, so one team can look after dozens of locations.</p></div>
+          <div class="faq__a"><p>Yes. We plan and install <a href="/starlink-for-business">multi-site rollouts</a> and track uptime, bandwidth and hardware status for every site from the Desalink Terminal, so one team can look after dozens of locations.</p></div>
         </details>
         <details class="faq__item">
           <summary class="faq__q">What support do I get after installation?<span class="faq__icon" aria-hidden="true"></span></summary>
@@ -439,28 +499,32 @@
       <div class="footer__cols">
         <div class="footer__col">
           <h4>Service</h4>
-          <a href="#reliable">Reliability</a>
-          <a href="#fleet">Desalink Terminal</a>
-          <a href="#fast-deploy">Deployment</a>
-          <a href="#order">Check availability</a>
+          <a href="/#reliable">Reliability</a>
+          <a href="/#fleet">Desalink Terminal</a>
+          <a href="/#fast-deploy">Deployment</a>
+          <a href="/#order">Check availability</a>
         </div>
         <div class="footer__col">
-          <h4>Company</h4>
-          <a href="#">About</a>
-          <a href="#">Careers</a>
-          <a href="#">Press</a>
+          <h4>Areas</h4>
+          <a href="/starlink-kuching">Kuching</a>
+          <a href="/starlink-miri">Miri</a>
+          <a href="/starlink-sibu">Sibu</a>
+          <a href="/starlink-bintulu">Bintulu</a>
+          <a href="/starlink-kapit">Kapit</a>
+          <a href="/starlink-baram">Baram</a>
+        </div>
+        <div class="footer__col">
+          <h4>Guides</h4>
+          <a href="/starlink-price-malaysia">Starlink price in Malaysia</a>
+          <a href="/starlink-for-longhouses">Starlink for longhouses</a>
+          <a href="/starlink-for-business">Starlink for business</a>
         </div>
         <div class="footer__col">
           <h4>Support</h4>
-          <a href="#support">Contact</a>
-          <a href="#">Install guide</a>
-          <a href="#faq">FAQ</a>
-        </div>
-        <div class="footer__col">
-          <h4>Legal</h4>
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">MCMC Compliance</a>
+          <a href="/#support">Contact</a>
+          <a href="/#faq">FAQ</a>
+          <a href="https://wa.me/60128871906" target="_blank" rel="noopener">WhatsApp</a>
+          <a href="/ms" hreflang="ms" lang="ms">Bahasa Malaysia</a>
         </div>
         <div class="footer__col footer__col--entities">
           <h4>Entities</h4>
@@ -536,6 +600,6 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.js"
           integrity="sha384-bopE5cbMjKUprmGnIRk2UdvCnHImrRLCtNW2uR6oDYqO+o3XWJeuIrWWxDzeDgNW"
           crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
-  <script src="script.js?v=20"></script>
+  <script src="/script.js?v=20"></script>
 </body>
 </html>
