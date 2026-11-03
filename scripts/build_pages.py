@@ -254,8 +254,8 @@ MS = [
     ('aria-label="Desalink Terminal on a phone, showing one day of internet speed at Long Lama: speed dips from about 190 to 118 Mbps during heavy rain between 2 and 4 PM, the site stays online, uptime today is 100% with 0 dropouts."',
      'aria-label="Desalink Terminal pada telefon, menunjukkan kelajuan internet sehari di Long Lama: kelajuan turun dari kira-kira 190 ke 118 Mbps semasa hujan lebat antara 2 dan 4 petang, tapak kekal dalam talian, masa operasi hari ini 100% tanpa gangguan."'),
     ('id="terminalDemo" role="img"', 'id="terminalDemo" data-lang="ms" role="img"'),
-    ('aria-label="Desalink Terminal on a phone: a map of 30 sites across Sarawak over the list of installs due today. The installation at Rumah Panjang Rimbas completes, its dot on the map lights up and the connected count rises from 19 to 20."',
-     'aria-label="Desalink Terminal pada telefon: peta 30 tapak di seluruh Sarawak dengan senarai pemasangan hari ini. Pemasangan di Rumah Panjang Rimbas selesai, titiknya pada peta menyala dan bilangan tapak bersambung naik dari 19 ke 20."'),
+    ('aria-label="Desalink Terminal on an iPad: a map of 30 sites across Sarawak with a card of the installs due today. The installation at Rumah Panjang Rimbas completes, the connected count rises from 19 to 20, and selecting it names the site on the map with 186 Mbps and 41 ms."',
+     'aria-label="Desalink Terminal pada iPad: peta 30 tapak di seluruh Sarawak dengan kad pemasangan hari ini. Pemasangan di Rumah Panjang Rimbas selesai, bilangan tapak bersambung naik dari 19 ke 20, dan apabila dipilih, tapak itu dinamakan pada peta dengan 186 Mbps dan 41 ms."'),
     # Deployed fast demo (strings live in demos/src/deploy-demo.tsx, picked by data-lang)
     ('id="deployDemo" role="img"', 'id="deployDemo" data-lang="ms" role="img"'),
     ("aria-label=\"A customer's message thread with Desalink: order confirmed Monday 9:12 AM, technician on the way Tuesday 10:30 AM, Starlink online by 1:05 PM, and the customer replies with 180 Mbps.\"",

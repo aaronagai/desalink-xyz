@@ -380,7 +380,7 @@ button { font: inherit; }
 .demo-host--terminal { aspect-ratio: 1 / 1; }
 @media (max-width: 507px) {
   .demo-host--deploy { aspect-ratio: 342 / 400; }
-  .demo-host--storm { aspect-ratio: 342 / 400; }
+  .demo-host--storm { aspect-ratio: 342 / 380; }
   .demo-host--terminal { aspect-ratio: 342 / 380; }
 }
 

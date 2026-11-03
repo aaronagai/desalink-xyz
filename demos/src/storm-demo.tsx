@@ -8,7 +8,8 @@ import type { Act } from './kit/act'
 import { langOf } from './lang'
 import './storm-demo.css'
 
-// Reliable & resilient, on a phone like Deployed fast: the Desalink Terminal's
+// Reliable & resilient, on a phone pinned from the top (Deployed fast is
+// pinned from the bottom): the Desalink Terminal's
 // view of one site, Long Lama, for the day. A finger scrubs along the line and
 // the headline reads out the hour under it. Through the afternoon's heavy rain
 // the speed dips, the status never leaves Online, and the day's uptime stays
@@ -26,8 +27,7 @@ const COPY = {
     now: 'Now',
     online: 'Online',
     rain: 'Heavy rain',
-    uptime: 'Uptime today',
-    drops: 'Dropouts',
+    summary: '100% uptime today · 0 dropouts',
     axis: ['6 AM', '12 PM', '6 PM'],
   },
   ms: {
@@ -35,8 +35,7 @@ const COPY = {
     now: 'Kini',
     online: 'Dalam talian',
     rain: 'Hujan lebat',
-    uptime: 'Masa operasi hari ini',
-    drops: 'Gangguan',
+    summary: 'Masa operasi 100% hari ini · 0 gangguan',
     axis: ['6 PG', '12 TGH', '6 PTG'],
   },
 }
@@ -44,7 +43,7 @@ const T = COPY[langOf(document.getElementById('stormDemo'))]
 
 // The chart in the phone's own points (screen 402pt, 20pt side insets)
 const CW = 362
-const CH = 150
+const CH = 124
 
 async function script(a: Act<S>) {
   await a.wait(1000)
@@ -92,11 +91,11 @@ export function StormDemo() {
     <Stage<S>
       width={496}
       height={496}
-      compact={{ below: 460, width: 342, height: 400 }}
+      compact={{ below: 460, width: 342, height: 380 }}
       initial={{ hour: null, x: null }}
       poster={{ hour: 9, x: null }}
       script={script}
-      cursor={{ at: { wide: { x: 250, y: 470 }, compact: { x: 170, y: 380 } }, style: 'touch' }}
+      cursor={{ at: { wide: { x: 250, y: 470 }, compact: { x: 170, y: 360 } }, style: 'touch' }}
       className="sd"
     >
       {(s, _rect, layout) => {
@@ -108,22 +107,26 @@ export function StormDemo() {
         const step = pts[1]!.x - pts[0]!.x
         const band = { left: pts[RAIN[0]!]!.x - step / 2, right: pts[RAIN[1]!]!.x + step / 2 }
         return (
-          <Phone width={layout === 'compact' ? 310 : 448} className="sd-phone">
+          <Phone width={layout === 'compact' ? 310 : 448} time="6:02" className="sd-phone">
             <div className="sd-screen">
-              <div className="sd-head">
-                <div className="sd-read">
-                  <div className="sd-label">
-                    Long Lama · <Roll variant="fade">{s.hour === null ? T.now : T.hours[s.hour]!}</Roll>
-                  </div>
-                  <div className="sd-value">
-                    <Roll stagger={25}>{String(s.hour === null ? MBPS[MBPS.length - 1] : MBPS[s.hour])}</Roll>
-                    <span className="sd-unit">Mbps</span>
-                  </div>
+              <div className="sd-nav">
+                <div>
+                  <div className="sd-title">Long Lama</div>
+                  <div className="sd-sub">{T.summary}</div>
                 </div>
                 <span className="sd-status">
                   <i aria-hidden />
                   {T.online}
                 </span>
+              </div>
+              <div className="sd-read">
+                <div className="sd-label">
+                  <Roll variant="fade">{s.hour === null ? T.now : T.hours[s.hour]!}</Roll>
+                </div>
+                <div className="sd-value">
+                  <Roll stagger={25}>{String(s.hour === null ? MBPS[MBPS.length - 1] : MBPS[s.hour])}</Roll>
+                  <span className="sd-unit">Mbps</span>
+                </div>
               </div>
               <div ref={plot} className="sd-plot" data-target="plot" style={{ width: CW, height: CH }}>
                 <span className="sd-band" style={{ left: band.left, width: band.right - band.left }}>
@@ -141,15 +144,13 @@ export function StormDemo() {
                   <span key={t}>{t}</span>
                 ))}
               </div>
-              <div className="sd-stats">
-                <div>
-                  <span className="sd-stat__label">{T.uptime}</span>
-                  <span className="sd-stat__value">100%</span>
-                </div>
-                <div>
-                  <span className="sd-stat__label">{T.drops}</span>
-                  <span className="sd-stat__value">0</span>
-                </div>
+              <div className="sd-hourly">
+                {[[54, 38], [62, 34], [48, 40], [58, 36]].map(([w1, w2], i) => (
+                  <div key={i} className="sd-hourly__row">
+                    <span className="sd-bar" style={{ width: w1 }} />
+                    <span className="sd-bar sd-bar--faint" style={{ width: w2 }} />
+                  </div>
+                ))}
               </div>
             </div>
           </Phone>

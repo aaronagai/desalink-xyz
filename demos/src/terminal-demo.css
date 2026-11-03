@@ -1,6 +1,6 @@
-/* A bird's-eye view: the Terminal's mobile map over a sheet of today's
-   installs, on a phone cropped at the top like Deployed fast. The screen is
-   laid out in the phone's own points. Scoped to .td. */
+/* A bird's-eye view: the Terminal on an iPad in landscape, pinned top-left
+   and running off the right and bottom. Everything inside the screen is in
+   iPadOS points. Scoped to .td. */
 .td {
   & .ss-stage {
     overflow: hidden;
@@ -9,44 +9,137 @@
     --ss-font: var(--font, Inter, -apple-system, BlinkMacSystemFont, sans-serif);
   }
 
-  .td-phone {
+  .td-ipad {
     position: absolute;
-    bottom: 24px;
+    top: 24px;
     left: 24px;
   }
-  & .ss-stage[data-layout='compact'] .td-phone {
+  & .ss-stage[data-layout='compact'] .td-ipad {
+    top: 16px;
     left: 16px;
-    bottom: 16px;
   }
 
-  .td-phone .ss-phone__content {
+  .td-app {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    height: 100%;
+    padding-top: 24px;
+    background: #fbfbfc;
   }
 
-  .td-screen {
-    display: flex;
-    flex-direction: column;
-    background: #f4f4f6;
+  .td-head { padding: 26px 28px 0; }
+  .td-title {
+    color: #000;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
   }
+  .td-sub {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-top: 6px;
+    color: #6e6e73;
+    font-size: 15px;
+    line-height: 1.3;
+    font-variant-numeric: tabular-nums;
+  }
+  .td-sub .ss-count { color: #000; font-weight: 600; }
 
   .td-map {
     position: relative;
-    margin: 8px 0 4px;
+    flex: none;
+    height: 450px;
+    margin-top: 4px;
   }
-  .td-map svg { display: block; }
+  .td-map svg { position: absolute; display: block; }
 
-  .td-land circle { fill: #8e8e93; opacity: 0.28; }
+  .td-land circle { fill: #8e8e93; opacity: 0.26; }
 
   .td-site {
-    stroke: #f4f4f6;
+    stroke: #fbfbfc;
     stroke-width: 2.5;
     transition: fill 0.45s ease, opacity 0.45s ease;
   }
   .td-site[data-status='connected'] { fill: #141414; }
   .td-site[data-status='pending'] { fill: #6e6e73; opacity: 0.5; }
   .td-site[data-status='inactive'] { fill: none; stroke: #9a9a9f; stroke-width: 2; }
+
+  /* Today's installs: a card floating over the sea */
+  .td-card {
+    position: absolute;
+    top: 20px;
+    left: 28px;
+    width: 372px;
+    padding: 12px 6px 6px;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 10px 30px rgb(0 0 0 / 0.08);
+  }
+  .td-section {
+    padding: 0 10px 6px;
+    color: #8e8e93;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .td-row {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 10px;
+    border-radius: 10px;
+    color: #000;
+    font-size: 15px;
+    line-height: 1.3;
+    transition: background-color 0.15s ease;
+  }
+  .td-row[data-selected] { background: #efeff3; }
+  .td-row__name {
+    overflow: hidden;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .td-row__meta {
+    color: #8e8e93;
+    font-size: 13px;
+    transition: color 0.2s ease;
+  }
+  .td-row__meta[data-on] { color: #1a7f37; }
+
+  /* The full list under the map: filler the crop runs through */
+  .td-list {
+    flex: 1;
+    padding: 18px 18px 0;
+    border-top: 1px solid #ececf0;
+    background: #fff;
+  }
+  .td-section--list { padding-bottom: 4px; }
+  .td-row--filler {
+    grid-template-columns: 20px auto 1fr;
+    border-radius: 0;
+    box-shadow: inset 0 -1px 0 #f0f0f3;
+  }
+  .td-row--filler .td-bar--meta { justify-self: end; }
+  .td-pip {
+    justify-self: center;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #141414;
+  }
+  .td-pip[data-status='pending'] { background: #b4b4b9; }
+  .td-pip[data-status='inactive'] { background: none; box-shadow: inset 0 0 0 1.5px #b4b4b9; }
+  .td-bar {
+    display: block;
+    height: 8px;
+    border-radius: 4px;
+    background: #e6e6ea;
+  }
+  .td-bar--meta { height: 7px; background: #efeff2; }
 
   /* The new site lights up once as it connects */
   .td-site[data-focus][data-status='connected'] {
@@ -55,29 +148,29 @@
     animation: td-light 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
-  /* Its name, a small dark tag over the dot */
+  /* Selected: its name and first readings, in a small dark tag over the dot */
   .td-tag {
     position: absolute;
-    padding: 5px 10px;
-    border-radius: 8px;
+    display: grid;
+    gap: 2px;
+    padding: 8px 12px;
+    border-radius: 10px;
     background: #141414;
     color: #fff;
-    font-size: 13px;
-    font-weight: 500;
     line-height: 1.3;
     white-space: nowrap;
-    translate: -30% calc(-100% - 12px);
+    translate: -50% calc(-100% - 14px);
     opacity: 0;
     transform: translateY(4px);
-    transition: opacity 0.3s ease 0.15s, transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) 0.15s;
+    transition: opacity 0.2s ease, transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     will-change: transform;
   }
   .td-tag::after {
     content: '';
     position: absolute;
     top: 100%;
-    left: 30%;
-    border: 5px solid transparent;
+    left: 50%;
+    border: 6px solid transparent;
     border-top-color: #141414;
     translate: -50% 0;
   }
@@ -85,67 +178,8 @@
     opacity: 1;
     transform: none;
   }
-
-  /* The sheet: today's installs, under the map */
-  .td-sheet {
-    padding: 18px 20px 40px;
-    border-radius: 24px 24px 0 0;
-    background: #fff;
-    box-shadow: 0 -1px 0 rgb(0 0 0 / 0.04), 0 -8px 24px rgb(0 0 0 / 0.04);
-  }
-  .td-sheet__head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-    font-size: 15px;
-    line-height: 1.3;
-    font-variant-numeric: tabular-nums;
-  }
-  .td-count {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 6px;
-    color: #6e6e73;
-  }
-  .td-count .ss-count {
-    color: #111;
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
-  .td-sites { color: #8e8e93; }
-
-  .td-sheet__title {
-    margin: 16px 0 4px;
-    color: #8e8e93;
-    font-size: 13px;
-    line-height: 1.3;
-  }
-
-  .td-row {
-    display: grid;
-    grid-template-columns: 22px minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 0;
-    font-size: 16px;
-    line-height: 1.3;
-  }
-  .td-row + .td-row { border-top: 1px solid #ececef; }
-  .td-row__name {
-    overflow: hidden;
-    color: #111;
-    font-weight: 500;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .td-row__meta {
-    color: #8e8e93;
-    font-size: 14px;
-    transition: color 0.2s ease;
-  }
-  .td-row__meta[data-on] { color: #1a7f37; }
+  .td-tag__name { font-size: 14px; font-weight: 600; }
+  .td-tag__stats { color: #c7c7cc; font-size: 13px; font-variant-numeric: tabular-nums; }
 }
 
 @keyframes td-light {
