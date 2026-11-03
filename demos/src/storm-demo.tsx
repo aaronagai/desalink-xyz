@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState, type PointerEvent } from 'react'
 import { CloudRain } from 'lucide-react'
 import { Stage } from './kit/stage'
 import { Phone } from './kit/phone'
@@ -85,8 +85,32 @@ function yOn(path: SVGPathElement | null | undefined, x: number) {
   return path.getPointAtLength(hi).y
 }
 
+// Interactive: hovering (or dragging a finger along) the chart takes over
+// from the script. The scripted finger hides, and the hairline, dot and
+// readout follow the visitor's own pointer, snapping to the nearest hour.
+// On leaving, the readout returns to "Now" and holds there until the
+// script's own loop is also at "Now", then hands back, so nothing jumps and
+// nothing redraws.
+const nearest = (x: number) => {
+  const pts = chartPoints({ data: MBPS, width: CW, height: CH, dot: false })
+  let near = 0
+  for (let i = 1; i < pts.length; i++) if (Math.abs(pts[i]!.x - x) < Math.abs(pts[near]!.x - x)) near = i
+  return near
+}
+
+type Live = { hour: number | null; x: number | null }
+
 export function StormDemo() {
   const plot = useRef<HTMLDivElement>(null)
+  const [live, setLive] = useState<Live | null>(null)
+  const handing = useRef(false)
+  const track = (e: PointerEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect()
+    const x = Math.max(0, Math.min(CW, ((e.clientX - r.left) / r.width) * CW))
+    handing.current = false
+    setLive({ hour: nearest(x), x })
+  }
+  const release = () => setLive((l) => (l ? { hour: null, x: l.x } : l))
   return (
     <Stage<S>
       width={496}
@@ -96,13 +120,20 @@ export function StormDemo() {
       poster={{ hour: 9, x: null }}
       script={script}
       cursor={{ at: { wide: { x: 250, y: 470 }, compact: { x: 170, y: 360 } }, style: 'touch' }}
-      className="sd"
+      className={live ? 'sd is-live' : 'sd'}
     >
       {(s, _rect, layout) => {
         const pts = chartPoints({ data: MBPS, width: CW, height: CH, dot: false })
-        const hx = s.x ?? (s.hour === null ? null : pts[s.hour]!.x)
-        const on = s.hour !== null
-        const hy = hx === null ? null : (yOn(plot.current?.querySelector<SVGPathElement>('.ss-chart__line'), hx) ?? pts[s.hour ?? 0]!.y)
+        // Released and the script is at "Now" too: hand back to the script
+        const back = !!live && live.hour === null && s.hour === null
+        if (back && !handing.current) {
+          handing.current = true
+          queueMicrotask(() => setLive((l) => (l && l.hour === null ? null : l)))
+        }
+        const v = live && !back ? live : s
+        const hx = v.x ?? (v.hour === null ? null : pts[v.hour]!.x)
+        const on = v.hour !== null
+        const hy = hx === null ? null : (yOn(plot.current?.querySelector<SVGPathElement>('.ss-chart__line'), hx) ?? pts[v.hour ?? 0]!.y)
         const p = hx === null || hy === null ? null : { x: hx, y: hy }
         const step = pts[1]!.x - pts[0]!.x
         const band = { left: pts[RAIN[0]!]!.x - step / 2, right: pts[RAIN[1]!]!.x + step / 2 }
@@ -121,14 +152,24 @@ export function StormDemo() {
               </div>
               <div className="sd-read">
                 <div className="sd-label">
-                  <Roll variant="fade">{s.hour === null ? T.now : T.hours[s.hour]!}</Roll>
+                  <Roll variant="fade">{v.hour === null ? T.now : T.hours[v.hour]!}</Roll>
                 </div>
                 <div className="sd-value">
-                  <Roll stagger={25}>{String(s.hour === null ? MBPS[MBPS.length - 1] : MBPS[s.hour])}</Roll>
+                  <Roll stagger={25}>{String(v.hour === null ? MBPS[MBPS.length - 1] : MBPS[v.hour])}</Roll>
                   <span className="sd-unit">Mbps</span>
                 </div>
               </div>
-              <div ref={plot} className="sd-plot" data-target="plot" style={{ width: CW, height: CH }}>
+              <div
+                ref={plot}
+                className="sd-plot"
+                data-target="plot"
+                style={{ width: CW, height: CH }}
+                onPointerEnter={track}
+                onPointerMove={track}
+                onPointerDown={track}
+                onPointerLeave={release}
+                onPointerCancel={release}
+              >
                 <span className="sd-band" style={{ left: band.left, width: band.right - band.left }}>
                   <span className="sd-band__label">
                     <CloudRain size={15} strokeWidth={2} aria-hidden />

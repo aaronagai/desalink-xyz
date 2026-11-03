@@ -102,6 +102,19 @@
     isolation: isolate;
     margin-top: 24px;
   }
+  /* The live scrub: the plot takes the visitor's pointer (and a finger's
+     horizontal drag, leaving vertical page scroll alone), with a hit area
+     reaching past the line up to the rain label and down over the axis */
+  .sd-plot {
+    cursor: crosshair;
+    touch-action: pan-y;
+  }
+  .sd-plot::after {
+    content: '';
+    position: absolute;
+    z-index: 3;
+    inset: -34px -10px -30px;
+  }
   .sd-plot .ss-chart { position: relative; z-index: 1; }
   .sd-plot .ss-chart__area { opacity: 0.45; }
 
@@ -181,4 +194,7 @@
     background: #e6e6ea;
   }
   .sd-bar--faint { background: #efeff2; }
+
+  /* While the visitor scrubs, the scripted finger steps aside */
+  &.is-live .ss-cursor { opacity: 0; transition: opacity 0.15s ease; }
 }
