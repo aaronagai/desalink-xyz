@@ -308,7 +308,8 @@
           Pelaksanaan berbilang tapak yang kompleks dijadualkan mengikut skop projek anda.
         </p>
       </div>
-      <div class="ph ph--square reveal" aria-hidden="true"><span>Imej: juruteknik di tapak</span></div>
+      <div class="deploy-demo reveal" id="deployDemo" data-lang="ms" role="img"
+             aria-label="Perbualan mesej pelanggan dengan Desalink: tempahan disahkan Isnin 9:12 pagi, juruteknik dalam perjalanan Selasa 10:30 pagi, Starlink dalam talian pada 1:05 petang, dan pelanggan membalas dengan 180 Mbps."></div>
     </section>
 
     <!-- ====== STATS ====== -->
@@ -601,5 +602,25 @@
           integrity="sha384-bopE5cbMjKUprmGnIRk2UdvCnHImrRLCtNW2uR6oDYqO+o3XWJeuIrWWxDzeDgNW"
           crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
   <script src="/script.js?v=20"></script>
+  <!-- Dipasang dengan pantas demo (Stageshow, React): loaded once the section is near the viewport -->
+  <script>
+    (function () {
+      var host = document.getElementById('deployDemo');
+      if (!host) return;
+      var load = function () {
+        var css = document.createElement('link');
+        css.rel = 'stylesheet'; css.href = '/js/deploy-demo.css?v=1';
+        document.head.appendChild(css);
+        var js = document.createElement('script');
+        js.src = '/js/deploy-demo.js?v=1'; js.defer = true;
+        document.body.appendChild(js);
+      };
+      if (!('IntersectionObserver' in window)) return load();
+      var io = new IntersectionObserver(function (e) {
+        if (e[0].isIntersecting) { io.disconnect(); load(); }
+      }, { rootMargin: '600px 0px' });
+      io.observe(host);
+    })();
+  </script>
 </body>
 </html>

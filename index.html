@@ -308,7 +308,8 @@
           Complex multi-site rollouts are scheduled around your project's scope.
         </p>
       </div>
-      <div class="ph ph--square reveal" aria-hidden="true"><span>Image: technician on site</span></div>
+      <div class="deploy-demo reveal" id="deployDemo" role="img"
+             aria-label="A customer's message thread with Desalink: order confirmed Monday 9:12 AM, technician on the way Tuesday 10:30 AM, Starlink online by 1:05 PM, and the customer replies with 180 Mbps."></div>
     </section>
 
     <!-- ====== STATS ====== -->
@@ -601,5 +602,25 @@
           integrity="sha384-bopE5cbMjKUprmGnIRk2UdvCnHImrRLCtNW2uR6oDYqO+o3XWJeuIrWWxDzeDgNW"
           crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
   <script src="/script.js?v=20"></script>
+  <!-- Deployed fast demo (Stageshow, React): loaded once the section is near the viewport -->
+  <script>
+    (function () {
+      var host = document.getElementById('deployDemo');
+      if (!host) return;
+      var load = function () {
+        var css = document.createElement('link');
+        css.rel = 'stylesheet'; css.href = '/js/deploy-demo.css?v=1';
+        document.head.appendChild(css);
+        var js = document.createElement('script');
+        js.src = '/js/deploy-demo.js?v=1'; js.defer = true;
+        document.body.appendChild(js);
+      };
+      if (!('IntersectionObserver' in window)) return load();
+      var io = new IntersectionObserver(function (e) {
+        if (e[0].isIntersecting) { io.disconnect(); load(); }
+      }, { rootMargin: '600px 0px' });
+      io.observe(host);
+    })();
+  </script>
 </body>
 </html>

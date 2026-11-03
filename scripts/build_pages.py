@@ -257,7 +257,10 @@ MS = [
     ("Most on-site installations are completed within 2–4 hours. Once you confirm\n          your order, our certified technicians can usually be on site within 24–48 hours.",
      "Kebanyakan pemasangan di tapak siap dalam 2–4 jam. Sebaik sahaja anda mengesahkan\n          tempahan, juruteknik kami yang bertauliah biasanya boleh tiba di tapak dalam 24–48 jam."),
     ("Complex multi-site rollouts are scheduled around your project's scope.", "Pelaksanaan berbilang tapak yang kompleks dijadualkan mengikut skop projek anda."),
-    ("<span>Image: technician on site</span>", "<span>Imej: juruteknik di tapak</span>"),
+    # Deployed fast demo (strings live in demos/src/deploy-demo.tsx, picked by data-lang)
+    ('id="deployDemo" role="img"', 'id="deployDemo" data-lang="ms" role="img"'),
+    ("aria-label=\"A customer's message thread with Desalink: order confirmed Monday 9:12 AM, technician on the way Tuesday 10:30 AM, Starlink online by 1:05 PM, and the customer replies with 180 Mbps.\"",
+     'aria-label="Perbualan mesej pelanggan dengan Desalink: tempahan disahkan Isnin 9:12 pagi, juruteknik dalam perjalanan Selasa 10:30 pagi, Starlink dalam talian pada 1:05 petang, dan pelanggan membalas dengan 180 Mbps."'),
     # numbers
     ("Desalink in numbers", "Desalink dalam angka"),
     ("Average uptime across Starlink's network", "Purata masa operasi rangkaian Starlink"),

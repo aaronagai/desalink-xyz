@@ -363,7 +363,20 @@ button { font: inherit; }
 .split__text p { color: var(--muted); margin-bottom: 18px; }
 .split__text p:last-child { margin-bottom: 0; }
 .split--reverse .split__text { order: 2; }
-.split--reverse .ph { order: 1; }
+.split--reverse .ph,
+.split--reverse .deploy-demo { order: 1; }
+
+/* Deployed fast: Stageshow phone demo (js/deploy-demo.js). The box reserves
+   the stage's shape before the script loads, so nothing shifts. */
+.deploy-demo {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--surface);
+  border-radius: var(--radius);
+}
+.deploy-demo.is-ready { background: none; }
+/* Below a 460px column the stage switches to its compact 342×400 design */
+@media (max-width: 507px) { .deploy-demo { aspect-ratio: 342 / 400; } }
 
 /* ---------- FEATURE (UI card + text) ---------- */
 .feature {
@@ -927,7 +940,8 @@ article.tile:hover .tile__box--img img { transform: scale(1.03); }
 
   .split, .feature { grid-template-columns: 1fr; gap: 32px; padding-top: 48px; padding-bottom: 48px; }
   .split--reverse .split__text { order: 1; }
-  .split--reverse .ph { order: 2; }
+  .split--reverse .ph,
+  .split--reverse .deploy-demo { order: 2; }
   .split__text { max-width: none; }
   .ph--square, .split__img { aspect-ratio: 4 / 3; }
   .sitemap { padding: 16px 12px 12px; }
