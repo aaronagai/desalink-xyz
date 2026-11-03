@@ -251,11 +251,11 @@ MS = [
     ("Complex multi-site rollouts are scheduled around your project's scope.", "Pelaksanaan berbilang tapak yang kompleks dijadualkan mengikut skop projek anda."),
     # Reliable and Terminal demos (strings live in demos/src/*-demo.tsx, picked by data-lang)
     ('id="stormDemo" role="img"', 'id="stormDemo" data-lang="ms" role="img"'),
-    ('aria-label="Desalink Terminal showing one day of internet speed at Long Lama: speed dips from about 190 to 118 Mbps during heavy rain between 2 and 4 PM, the site stays online, uptime today is 100% with 0 dropouts."',
-     'aria-label="Desalink Terminal menunjukkan kelajuan internet sehari di Long Lama: kelajuan turun dari kira-kira 190 ke 118 Mbps semasa hujan lebat antara 2 dan 4 petang, tapak kekal dalam talian, masa operasi hari ini 100% tanpa gangguan."'),
+    ('aria-label="Desalink Terminal on a phone, showing one day of internet speed at Long Lama: speed dips from about 190 to 118 Mbps during heavy rain between 2 and 4 PM, the site stays online, uptime today is 100% with 0 dropouts."',
+     'aria-label="Desalink Terminal pada telefon, menunjukkan kelajuan internet sehari di Long Lama: kelajuan turun dari kira-kira 190 ke 118 Mbps semasa hujan lebat antara 2 dan 4 petang, tapak kekal dalam talian, masa operasi hari ini 100% tanpa gangguan."'),
     ('id="terminalDemo" role="img"', 'id="terminalDemo" data-lang="ms" role="img"'),
-    ('aria-label="Desalink Terminal map of 30 sites across Sarawak: an installation at Rumah Panjang Batu Niah completes, its dot lights up and the connected count rises from 19 to 20, then the site opens showing 41 ms latency and 186 Mbps download."',
-     'aria-label="Peta Desalink Terminal bagi 30 tapak di seluruh Sarawak: pemasangan di Rumah Panjang Batu Niah selesai, titiknya menyala dan bilangan tapak bersambung naik dari 19 ke 20, kemudian tapak itu dibuka menunjukkan kependaman 41 ms dan muat turun 186 Mbps."'),
+    ('aria-label="Desalink Terminal on a phone: a map of 30 sites across Sarawak over the list of installs due today. The installation at Rumah Panjang Rimbas completes, its dot on the map lights up and the connected count rises from 19 to 20."',
+     'aria-label="Desalink Terminal pada telefon: peta 30 tapak di seluruh Sarawak dengan senarai pemasangan hari ini. Pemasangan di Rumah Panjang Rimbas selesai, titiknya pada peta menyala dan bilangan tapak bersambung naik dari 19 ke 20."'),
     # Deployed fast demo (strings live in demos/src/deploy-demo.tsx, picked by data-lang)
     ('id="deployDemo" role="img"', 'id="deployDemo" data-lang="ms" role="img"'),
     ("aria-label=\"A customer's message thread with Desalink: order confirmed Monday 9:12 AM, technician on the way Tuesday 10:30 AM, Starlink online by 1:05 PM, and the customer replies with 180 Mbps.\"",
