@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Stageshow product demos for desalink.xyz, bundled into /js",
   "scripts": {
-    "build": "esbuild src/deploy-demo.tsx --bundle --minify --format=iife --target=es2020 --jsx=automatic --define:process.env.NODE_ENV='\"production\"' --outfile=../js/deploy-demo.js --legal-comments=none",
+    "build": "esbuild src/main.tsx --bundle --minify --format=iife --target=es2020 --jsx=automatic --define:process.env.NODE_ENV='\"production\"' --outfile=../js/demos.js --legal-comments=none",
     "watch": "npm run build -- --watch"
   },
   "dependencies": {

@@ -1,0 +1,176 @@
+/* A bird's-eye view: the Terminal window in a corner bleed, with the day's
+   installs as a satellite straddling its left edge over open sea. */
+.td {
+  & .ss-stage {
+    overflow: hidden;
+    background: var(--surface, #ebe9e4);
+    border-radius: var(--radius, 10px);
+    --ss-font: var(--font, Inter, -apple-system, BlinkMacSystemFont, sans-serif);
+  }
+
+  .td-win {
+    position: absolute;
+    top: 24px;
+    left: 120px;
+    width: 448px;
+    box-shadow: var(--ss-shadow-hero);
+  }
+  & .ss-stage[data-layout='compact'] .td-win {
+    top: 16px;
+    left: 16px;
+    width: 310px;
+  }
+
+  .td-body {
+    min-height: 460px;
+    padding: 16px 0 0;
+    background: var(--ss-surface);
+  }
+
+  .td-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 0 16px;
+    font-size: 13px;
+    line-height: 1.3;
+  }
+  .td-region { color: var(--ss-text-faint); }
+  .td-region::before { content: '·'; margin-right: 8px; }
+  .td-count {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    color: var(--ss-text);
+    font-variant-numeric: tabular-nums;
+  }
+  .td-count .ss-count {
+    color: var(--ss-text-strong);
+    font-weight: 600;
+  }
+
+  .td-map {
+    position: relative;
+    margin-top: 8px;
+    overflow: visible;
+  }
+  .td-map svg { display: block; overflow: visible; }
+
+  .td-land circle { fill: var(--ss-text-faint); opacity: 0.22; }
+
+  .td-site {
+    stroke: var(--ss-surface);
+    stroke-width: 2;
+    transition: fill 0.45s ease, opacity 0.45s ease;
+  }
+  .td-site[data-status='connected'] { fill: var(--ss-text-strong); }
+  .td-site[data-status='pending'] { fill: var(--ss-text); opacity: 0.55; }
+  .td-site[data-status='inactive'] { fill: none; stroke: var(--ss-text-faint); stroke-width: 1.5; }
+
+  /* The new site lights up with a single soft ring as it connects */
+  .td-site[data-focus][data-status='connected'] {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: td-light 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  .td-hit {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    margin: -14px 0 0 -14px;
+    border-radius: 50%;
+  }
+
+  .td-pop {
+    position: absolute;
+    width: 200px;
+    padding: 12px 14px;
+    border-radius: 12px;
+  }
+  .td-pop__name {
+    color: var(--ss-text-strong);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .td-pop__status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    color: var(--ss-success-text);
+    font-size: 12px;
+    line-height: 1.3;
+  }
+  .td-pop__status i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ss-success);
+  }
+  .td-pop__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 10px 0 0;
+    padding-top: 10px;
+    border-top: 1px solid var(--ss-line);
+  }
+  .td-pop__stats div { display: grid; gap: 2px; }
+  .td-pop__stats dt { color: var(--ss-text); font-size: 11px; line-height: 1.3; }
+  .td-pop__stats dd { margin: 0; color: var(--ss-text-strong); font-size: 13px; font-weight: 600; line-height: 1.3; font-variant-numeric: tabular-nums; }
+
+  /* Satellite: the day's installs */
+  .td-card {
+    position: absolute;
+    top: 132px;
+    left: 24px;
+    width: 196px;
+    padding: 12px 0 6px;
+    border-radius: 12px;
+    background: var(--ss-raised, var(--ss-surface));
+    box-shadow: var(--ss-shadow-satellite);
+  }
+  & .ss-stage[data-layout='compact'] .td-card {
+    top: 104px;
+    left: 28px;
+    width: 196px;
+  }
+  .td-card__title {
+    padding: 0 12px 6px;
+    color: var(--ss-text);
+    font-size: 12px;
+    line-height: 1.3;
+  }
+  .td-row {
+    display: grid;
+    grid-template-columns: 16px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    line-height: 1.3;
+  }
+  .td-row__name {
+    overflow: hidden;
+    color: var(--ss-text-strong);
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .td-row__meta {
+    color: var(--ss-text-faint);
+    font-size: 12px;
+    transition: color 0.2s ease;
+  }
+  .td-row__meta[data-on] { color: var(--ss-success-text); }
+}
+
+@keyframes td-light {
+  0% { transform: scale(1.7); }
+  100% { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .td .td-site[data-focus] { animation: none; }
+}

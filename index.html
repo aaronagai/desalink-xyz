@@ -248,42 +248,14 @@
           heat and harsh winds.
         </p>
       </div>
-      <div class="uptime reveal" id="uptime">
-        <div class="uptime__head">
-          <span class="uptime__status"><svg class="uptime__check" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8"/><path d="M4.6 8.2l2.2 2.2 4.6-4.8"/></svg>All sites operational</span>
-          <span class="mono mono--muted">Last 90 days</span>
-        </div>
-        <div class="uptime__rows" id="uptimeRows"></div>
-        <div class="uptime__foot">
-          <span class="mono mono--muted">Illustrative data</span>
-          <button type="button" class="textlink uptime__more" id="uptimeMore">View all sites</button>
-        </div>
-        <div class="uptime__tip mono" id="uptimeTip" role="tooltip" hidden></div>
-      </div>
+      <div class="demo-host demo-host--storm reveal" id="stormDemo" role="img"
+             aria-label="Desalink Terminal showing one day of internet speed at Long Lama: speed dips from about 190 to 118 Mbps during heavy rain between 2 and 4 PM, the site stays online, uptime today is 100% with 0 dropouts."></div>
     </section>
 
     <!-- ====== BIRD'S EYE VIEW / TERMINAL ====== -->
     <section class="feature" id="fleet">
-      <div class="sitemap reveal" id="sitemap">
-        <div class="sitemap__head">
-          <span class="mono mono--muted">Sarawak · <span id="sitemapCount">30</span> sites</span>
-          <span class="sitemap__live"><i></i>Live</span>
-        </div>
-        <div class="sitemap__stage" id="sitemapStage">
-          <svg class="sitemap__svg" id="sitemapSvg" viewBox="0 0 630 430" role="img" aria-label="Map of Desalink sites across Sarawak"></svg>
-          <div class="sitemap__card" id="sitemapCard" aria-live="polite" hidden>
-            <span class="sitemap__card-name" id="cardName"></span>
-            <span class="sitemap__card-loc mono mono--muted" id="cardLoc"></span>
-            <span class="sitemap__card-status mono" id="cardStatus"></span>
-            <span class="sitemap__card-plan" id="cardPlan"></span>
-          </div>
-        </div>
-        <div class="sitemap__legend mono">
-          <span><i class="dot dot--connected"></i>Connected</span>
-          <span><i class="dot dot--pending"></i>Pending</span>
-          <span><i class="dot dot--inactive"></i>Inactive</span>
-        </div>
-      </div>
+      <div class="demo-host demo-host--terminal reveal" id="terminalDemo" role="img"
+             aria-label="Desalink Terminal map of 30 sites across Sarawak: an installation at Rumah Panjang Batu Niah completes, its dot lights up and the connected count rises from 19 to 20, then the site opens showing 41 ms latency and 186 Mbps download."></div>
       <div class="feature__text reveal">
         <span class="meta">Desalink Terminal <i></i> Multi-site</span>
         <h2 class="h2">A bird's-eye view of every site</h2>
@@ -308,7 +280,7 @@
           Complex multi-site rollouts are scheduled around your project's scope.
         </p>
       </div>
-      <div class="deploy-demo reveal" id="deployDemo" role="img"
+      <div class="demo-host demo-host--deploy reveal" id="deployDemo" role="img"
              aria-label="A customer's message thread with Desalink: order confirmed Monday 9:12 AM, technician on the way Tuesday 10:30 AM, Starlink online by 1:05 PM, and the customer replies with 180 Mbps."></div>
     </section>
 
@@ -602,24 +574,26 @@
           integrity="sha384-bopE5cbMjKUprmGnIRk2UdvCnHImrRLCtNW2uR6oDYqO+o3XWJeuIrWWxDzeDgNW"
           crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
   <script src="/script.js?v=20"></script>
-  <!-- Deployed fast demo (Stageshow, React): loaded once the section is near the viewport -->
+  <!-- Stageshow product demos (React, demos/ -> js/demos.js): loaded once the first is near the viewport -->
   <script>
     (function () {
-      var host = document.getElementById('deployDemo');
-      if (!host) return;
+      var hosts = document.querySelectorAll('.demo-host');
+      if (!hosts.length) return;
+      var loaded = false;
       var load = function () {
+        if (loaded) return; loaded = true;
         var css = document.createElement('link');
-        css.rel = 'stylesheet'; css.href = '/js/deploy-demo.css?v=1';
+        css.rel = 'stylesheet'; css.href = '/js/demos.css?v=2';
         document.head.appendChild(css);
         var js = document.createElement('script');
-        js.src = '/js/deploy-demo.js?v=1'; js.defer = true;
+        js.src = '/js/demos.js?v=2'; js.defer = true;
         document.body.appendChild(js);
       };
       if (!('IntersectionObserver' in window)) return load();
-      var io = new IntersectionObserver(function (e) {
-        if (e[0].isIntersecting) { io.disconnect(); load(); }
+      var io = new IntersectionObserver(function (entries) {
+        if (entries.some(function (e) { return e.isIntersecting; })) { io.disconnect(); load(); }
       }, { rootMargin: '600px 0px' });
-      io.observe(host);
+      hosts.forEach(function (h) { io.observe(h); });
     })();
   </script>
 </body>

@@ -1,0 +1,173 @@
+/* Reliable & resilient: one site's day, pinned with a bottom bleed. */
+.sd {
+  & .ss-stage {
+    overflow: hidden;
+    background: var(--surface, #ebe9e4);
+    border-radius: var(--radius, 10px);
+    --ss-font: var(--font, Inter, -apple-system, BlinkMacSystemFont, sans-serif);
+  }
+
+  .sd-win {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    width: 448px;
+    box-shadow: var(--ss-shadow-hero);
+  }
+  & .ss-stage[data-layout='compact'] .sd-win {
+    top: 16px;
+    left: 16px;
+    width: 310px;
+  }
+
+  .sd-body {
+    display: grid;
+    gap: 18px;
+    min-height: 440px;
+    align-content: start;
+    padding: 22px 24px 60px;
+    background: var(--ss-surface);
+  }
+  & .ss-stage[data-layout='compact'] .sd-body {
+    gap: 14px;
+    padding: 18px 16px 60px;
+  }
+
+  .sd-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .sd-read { display: grid; gap: 2px; }
+
+  .sd-label {
+    color: var(--ss-text);
+    font-size: 13px;
+    line-height: 1.3;
+  }
+
+  .sd-value {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    color: var(--ss-text-strong);
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+  }
+  .sd-unit {
+    color: var(--ss-text);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+
+  /* The status: one pill that never changes, which is the point */
+  .sd-status {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--ss-success-soft);
+    color: var(--ss-success-text);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .sd-status i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ss-success);
+  }
+
+  .sd-plot { position: relative; isolation: isolate; }
+  .sd-plot .ss-chart { position: relative; z-index: 1; }
+  .sd-plot .ss-chart__area { opacity: 0.45; }
+
+  /* The rain: a hatched band behind the line, named at its top */
+  .sd-band {
+    position: absolute;
+    z-index: 0;
+    top: -6px;
+    bottom: 0;
+    border-radius: 6px;
+    background: repeating-linear-gradient(135deg, transparent 0 5px, var(--ss-line) 5px 6px), var(--ss-fill);
+  }
+  .sd-band__label {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    translate: -50% 0;
+    color: var(--ss-text);
+    font-size: 12px;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+  .sd-band__label svg { flex: none; }
+
+  .sd-hair {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    margin-left: -0.5px;
+    background: var(--ss-line);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .sd-dot {
+    position: absolute;
+    z-index: 2;
+    width: 9px;
+    height: 9px;
+    margin: -4.5px 0 0 -4.5px;
+    border: 2px solid var(--ss-surface);
+    border-radius: 50%;
+    background: var(--ss-accent);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.18);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .sd-hair[data-on],
+  .sd-dot[data-on] { opacity: 1; }
+
+  .sd-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -8px;
+    color: var(--ss-text-faint);
+    font-size: 11px;
+    line-height: 1.3;
+  }
+
+  .sd-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--ss-line);
+  }
+  .sd-stats > div { display: grid; gap: 4px; }
+  .sd-stat__label {
+    color: var(--ss-text);
+    font-size: 12px;
+    line-height: 1.3;
+  }
+  .sd-stat__value {
+    color: var(--ss-text-strong);
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.3;
+    font-variant-numeric: tabular-nums;
+  }
+}

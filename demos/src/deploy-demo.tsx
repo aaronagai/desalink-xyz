@@ -1,4 +1,4 @@
-import { createRoot } from 'react-dom/client'
+import { langOf } from './lang'
 import { Stage } from './kit/stage'
 import { Phone } from './kit/phone'
 import { Thread, Bubble, Stamp, Receipt } from './kit/messages'
@@ -57,8 +57,7 @@ const COPY = {
     placeholder: 'Mesej',
   },
 }
-const host = document.getElementById('deployDemo')
-const T = COPY[host?.dataset.lang === 'ms' ? 'ms' : 'en']
+const T = COPY[langOf(document.getElementById('deployDemo'))]
 
 async function script(a: Act<S>) {
   await a.wait(900)
@@ -93,7 +92,7 @@ function ArrowUp() {
   )
 }
 
-function DeployDemo() {
+export function DeployDemo() {
   return (
     <Stage
       width={496}
@@ -155,9 +154,4 @@ function DeployDemo() {
       )}
     </Stage>
   )
-}
-
-if (host) {
-  host.classList.add('is-ready')
-  createRoot(host).render(<DeployDemo />)
 }
