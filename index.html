@@ -255,7 +255,7 @@
     <!-- ====== BIRD'S EYE VIEW / TERMINAL ====== -->
     <section class="feature" id="fleet">
       <div class="demo-host demo-host--terminal reveal" id="terminalDemo" role="img"
-             aria-label="Desalink Terminal on an iPad: a map of 30 sites across Sarawak with a card of the installs due today. The installation at Rumah Panjang Rimbas completes, the connected count rises from 19 to 20, and selecting it names the site on the map with 186 Mbps and 41 ms."></div>
+             aria-label="Desalink Terminal on an iPad showing one area, Serian: a map of 9 villages, 6 connected. Kampung Tebakang and Kampung Sungai Buloh are selected from the list of villages not yet connected and an installation is requested; both turn Scheduled, with technicians on site in 24 to 48 hours."></div>
       <div class="feature__text reveal">
         <span class="meta">Desalink Terminal <i></i> Multi-site</span>
         <h2 class="h2">A bird's-eye view of every site</h2>
@@ -583,10 +583,10 @@
       var load = function () {
         if (loaded) return; loaded = true;
         var css = document.createElement('link');
-        css.rel = 'stylesheet'; css.href = '/js/demos.css?v=3';
+        css.rel = 'stylesheet'; css.href = '/js/demos.css?v=4';
         document.head.appendChild(css);
         var js = document.createElement('script');
-        js.src = '/js/demos.js?v=3'; js.defer = true;
+        js.src = '/js/demos.js?v=4'; js.defer = true;
         document.body.appendChild(js);
       };
       if (!('IntersectionObserver' in window)) return load();

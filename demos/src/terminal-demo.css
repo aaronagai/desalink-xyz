@@ -1,6 +1,6 @@
-/* A bird's-eye view: the Terminal on an iPad in landscape, pinned top-left
-   and running off the right and bottom. Everything inside the screen is in
-   iPadOS points. Scoped to .td. */
+/* A bird's-eye view of one area: the Terminal on an iPad in portrait, pinned
+   top-left and running off the right and bottom. Inside the screen everything
+   is in iPadOS points. Scoped to .td. */
 .td {
   & .ss-stage {
     overflow: hidden;
@@ -27,7 +27,7 @@
     background: #fbfbfc;
   }
 
-  .td-head { padding: 26px 28px 0; }
+  .td-head { padding: 18px 28px 0; }
   .td-title {
     color: #000;
     font-size: 32px;
@@ -46,57 +46,162 @@
     font-variant-numeric: tabular-nums;
   }
   .td-sub .ss-count { color: #000; font-weight: 600; }
+  .td-sched {
+    color: #141414;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.2s;
+  }
+  .td-sched[data-show] { opacity: 1; }
+  .td-sched::before { content: '·'; margin-right: 6px; }
 
+  /* The area map */
   .td-map {
     position: relative;
     flex: none;
-    height: 450px;
-    margin-top: 4px;
+    width: 558px;
+    height: 270px;
+    margin: 4px 0 10px 20px;
   }
-  .td-map svg { position: absolute; display: block; }
-
-  .td-land circle { fill: #8e8e93; opacity: 0.26; }
-
-  .td-site {
+  .td-map svg { display: block; overflow: visible; }
+  .td-land circle { fill: #8e8e93; opacity: 0.2; }
+  .td-river {
+    fill: none;
+    stroke: #cfdbe6;
+    stroke-width: 7;
+    stroke-linecap: round;
+  }
+  .td-road {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 5;
+    stroke-linecap: round;
+  }
+  .td-road--edge { stroke: #dedee3; stroke-width: 8; }
+  .td-pin[data-state='connected'] {
+    fill: #141414;
     stroke: #fbfbfc;
-    stroke-width: 2.5;
-    transition: fill 0.45s ease, opacity 0.45s ease;
+    stroke-width: 3;
   }
-  .td-site[data-status='connected'] { fill: #141414; }
-  .td-site[data-status='pending'] { fill: #6e6e73; opacity: 0.5; }
-  .td-site[data-status='inactive'] { fill: none; stroke: #9a9a9f; stroke-width: 2; }
 
-  /* Today's installs: a card floating over the sea */
-  .td-card {
+  .td-town {
     position: absolute;
-    top: 20px;
-    left: 28px;
-    width: 372px;
-    padding: 12px 6px 6px;
-    border-radius: 16px;
-    background: #fff;
-    box-shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 10px 30px rgb(0 0 0 / 0.08);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #000;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    translate: -6px -50%;
   }
-  .td-section {
-    padding: 0 10px 6px;
-    color: #8e8e93;
+  .td-town i {
+    width: 12px;
+    height: 12px;
+    border: 2px solid #fbfbfc;
+    border-radius: 3px;
+    background: #141414;
+    box-shadow: 0 0 0 1px #141414;
+  }
+
+  /* Villages without coverage: hollow and named; picked, then scheduled */
+  .td-village {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    translate: -9px -50%;
+  }
+  .td-village__pin {
+    position: relative;
+    flex: none;
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid #8e8e93;
+    border-radius: 50%;
+    background: #fff;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.25s ease;
+  }
+  .td-village__name {
+    padding: 4px 8px;
+    border-radius: 7px;
+    background: rgb(255 255 255 / 0.92);
+    color: #3a3a3c;
     font-size: 13px;
     font-weight: 500;
     line-height: 1.3;
+    white-space: nowrap;
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06);
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
+  .td-village[data-state='picked'] .td-village__pin {
+    border-color: #141414;
+    box-shadow: 0 0 0 5px rgb(20 20 20 / 0.12);
+  }
+  .td-village[data-state='picked'] .td-village__name,
+  .td-village[data-state='scheduled'] .td-village__name {
+    background: #141414;
+    color: #fff;
+    box-shadow: none;
+  }
+  /* Scheduled: half-filled, on its way */
+  .td-village[data-state='scheduled'] .td-village__pin {
+    border-color: #141414;
+    background: linear-gradient(90deg, #141414 50%, #fff 50%);
+  }
+
+  /* The sheet: villages not yet connected, and the request */
+  .td-sheet {
+    flex: 1;
+    padding: 18px 20px 0;
+    border-radius: 22px 22px 0 0;
+    background: #fff;
+    box-shadow: 0 -1px 0 #ececf0;
+  }
+  .td-sheet__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 0 0 8px;
+    width: 560px;
+  }
+  .td-sheet__title {
+    color: #000;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .td-btn {
+    display: inline-flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: #ececf0;
+    color: #8e8e93;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.3;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, color 0.2s ease, scale 0.12s ease;
+  }
+  .td-btn[data-ready] { background: #141414; color: #fff; }
+  .td-btn[data-done] { background: #e3f6e8; color: #1a7f37; }
+  .td-btn[data-pressed] { scale: 0.96; }
+
+  .td-rows { width: 568px; margin-top: 8px; }
   .td-row {
     display: grid;
-    grid-template-columns: 20px minmax(0, 1fr) auto;
+    grid-template-columns: 22px minmax(0, 1fr) auto;
     align-items: center;
-    gap: 10px;
-    padding: 11px 10px;
-    border-radius: 10px;
+    gap: 12px;
+    padding: 12px 8px;
+    border-top: 1px solid #f0f0f3;
     color: #000;
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.3;
-    transition: background-color 0.15s ease;
   }
-  .td-row[data-selected] { background: #efeff3; }
   .td-row__name {
     overflow: hidden;
     font-weight: 500;
@@ -104,89 +209,58 @@
     white-space: nowrap;
   }
   .td-row__meta {
+    padding-right: 2px;
     color: #8e8e93;
-    font-size: 13px;
-    transition: color 0.2s ease;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
   }
-  .td-row__meta[data-on] { color: #1a7f37; }
+  .td-row[data-state='scheduled'] .td-row__meta { color: #141414; font-weight: 500; }
 
-  /* The full list under the map: filler the crop runs through */
-  .td-list {
-    flex: 1;
-    padding: 18px 18px 0;
-    border-top: 1px solid #ececf0;
-    background: #fff;
-  }
-  .td-section--list { padding-bottom: 4px; }
-  .td-row--filler {
-    grid-template-columns: 20px auto 1fr;
-    border-radius: 0;
-    box-shadow: inset 0 -1px 0 #f0f0f3;
-  }
-  .td-row--filler .td-bar--meta { justify-self: end; }
-  .td-pip {
-    justify-self: center;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: #141414;
-  }
-  .td-pip[data-status='pending'] { background: #b4b4b9; }
-  .td-pip[data-status='inactive'] { background: none; box-shadow: inset 0 0 0 1.5px #b4b4b9; }
-  .td-bar {
-    display: block;
-    height: 8px;
-    border-radius: 4px;
-    background: #e6e6ea;
-  }
-  .td-bar--meta { height: 7px; background: #efeff2; }
-
-  /* The new site lights up once as it connects */
-  .td-site[data-focus][data-status='connected'] {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: td-light 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
-  }
-
-  /* Selected: its name and first readings, in a small dark tag over the dot */
-  .td-tag {
-    position: absolute;
+  .td-box {
     display: grid;
-    gap: 2px;
-    padding: 8px 12px;
-    border-radius: 10px;
-    background: #141414;
-    color: #fff;
-    line-height: 1.3;
-    white-space: nowrap;
-    translate: -50% calc(-100% - 14px);
-    opacity: 0;
-    transform: translateY(4px);
-    transition: opacity 0.2s ease, transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    will-change: transform;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #c7c7cc;
+    border-radius: 7px;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
   }
-  .td-tag::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    border: 6px solid transparent;
-    border-top-color: #141414;
-    translate: -50% 0;
+  .td-box path {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 14;
+    stroke-dashoffset: 14;
+    transition: stroke-dashoffset 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) 0.05s;
   }
-  .td-tag[data-show] {
-    opacity: 1;
-    transform: none;
+  .td-box[data-on] { background: #141414; border-color: #141414; }
+  .td-box[data-on] path { stroke-dashoffset: 0; }
+
+  /* Compact (phone column): a larger iPad so type stays readable, the map
+     cropped to the two villages being picked, the sheet at the visible width */
+  & .ss-stage[data-layout='compact'] {
+    .td-head { padding: 12px 24px 0; }
+    .td-map {
+      width: 356px;
+      height: 196px;
+      margin: 2px 0 6px 20px;
+      overflow: hidden;
+    }
+    .td-map__in { translate: -64px -38px; }
+    .td-sub { flex-wrap: wrap; row-gap: 2px; max-width: 330px; }
+    .td-sched { flex-basis: 100%; }
+    .td-sched::before { content: none; }
+    .td-village[data-i='2'] .td-village__name { display: none; }
+    .td-sheet { padding-top: 14px; }
+    .td-sheet__head { width: 334px; padding-left: 6px; }
+    .td-btn { height: 36px; padding: 0 14px; }
+    .td-rows { width: 340px; margin-top: 4px; }
+    .td-row:nth-child(3) { display: none; }
   }
-  .td-tag__name { font-size: 14px; font-weight: 600; }
-  .td-tag__stats { color: #c7c7cc; font-size: 13px; font-variant-numeric: tabular-nums; }
 }
 
-@keyframes td-light {
-  0% { transform: scale(1.7); }
-  100% { transform: scale(1); }
-}
 @media (prefers-reduced-motion: reduce) {
-  .td .td-site[data-focus] { animation: none; }
-  .td .td-tag { transition: none; }
+  .td .td-box path { transition: none; }
 }
