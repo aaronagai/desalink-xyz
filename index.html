@@ -253,9 +253,7 @@
     </section>
 
     <!-- ====== BIRD'S EYE VIEW / TERMINAL ====== -->
-    <section class="feature" id="fleet">
-      <div class="demo-host demo-host--terminal reveal" id="terminalDemo" role="img"
-             aria-label="Desalink Terminal on an iPad showing one area, Serian: a map of 9 villages, 6 connected. Kampung Tebakang and Kampung Sungai Buloh are selected from the list of villages not yet connected and an installation is requested; both turn Scheduled, with technicians on site in 24 to 48 hours."></div>
+    <section class="feature feature--wide" id="fleet">
       <div class="feature__text reveal">
         <span class="meta">Desalink Terminal <i></i> Multi-site</span>
         <h2 class="h2">A bird's-eye view of every site</h2>
@@ -265,6 +263,8 @@
         </p>
         <button type="button" class="btn btn--ghost" id="demoOpen" aria-haspopup="dialog" aria-controls="demoModal">View live demo</button>
       </div>
+      <div class="demo-host demo-host--terminal reveal" id="terminalDemo" role="img"
+             aria-label="Desalink Terminal on an iPad: Serian Overview, a map of the zones of the district. Mukim Tebakang is selected and turns orange, showing 312 households at 38% coverage; Kampung Tebakang, with 120 homes and no coverage, is requested for installation, and a rollout plan of 2 villages and 184 homes with technicians on site in 24 to 48 hours slides in."></div>
     </section>
 
     <!-- ====== FAST DEPLOYMENT ====== -->
@@ -583,10 +583,10 @@
       var load = function () {
         if (loaded) return; loaded = true;
         var css = document.createElement('link');
-        css.rel = 'stylesheet'; css.href = '/js/demos.css?v=5';
+        css.rel = 'stylesheet'; css.href = '/js/demos.css?v=6';
         document.head.appendChild(css);
         var js = document.createElement('script');
-        js.src = '/js/demos.js?v=5'; js.defer = true;
+        js.src = '/js/demos.js?v=6'; js.defer = true;
         document.body.appendChild(js);
       };
       if (!('IntersectionObserver' in window)) return load();

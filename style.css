@@ -377,11 +377,16 @@ button { font: inherit; }
 }
 .demo-host.is-ready { background: none; }
 .demo-host--storm { aspect-ratio: 1 / 1; }
-.demo-host--terminal { aspect-ratio: 1 / 1; }
+.demo-host--terminal { aspect-ratio: 1072 / 600; }
+@media (max-width: 747px) { .demo-host--terminal { aspect-ratio: 342 / 440; } }
+
+/* The Terminal section: copy on top, the wide demo under it at full width */
+.feature.feature--wide { grid-template-columns: 1fr; gap: 40px; }
+.feature.feature--wide .feature__text { max-width: 640px; order: 0; }
+.feature.feature--wide .feature__text p { max-width: 560px; }
 @media (max-width: 507px) {
   .demo-host--deploy { aspect-ratio: 342 / 400; }
   .demo-host--storm { aspect-ratio: 342 / 380; }
-  .demo-host--terminal { aspect-ratio: 342 / 420; }
 }
 
 /* ---------- FEATURE (UI card + text) ---------- */

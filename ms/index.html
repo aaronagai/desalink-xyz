@@ -253,9 +253,7 @@
     </section>
 
     <!-- ====== BIRD'S EYE VIEW / TERMINAL ====== -->
-    <section class="feature" id="fleet">
-      <div class="demo-host demo-host--terminal reveal" id="terminalDemo" data-lang="ms" role="img"
-             aria-label="Desalink Terminal pada iPad menunjukkan satu kawasan, Serian: peta 9 kampung, 6 bersambung. Kampung Tebakang dan Kampung Sungai Buloh dipilih daripada senarai kampung yang belum bersambung dan pemasangan dimohon; kedua-duanya dijadualkan, dengan juruteknik di tapak dalam 24 hingga 48 jam."></div>
+    <section class="feature feature--wide" id="fleet">
       <div class="feature__text reveal">
         <span class="meta">Desalink Terminal <i></i> Berbilang tapak</span>
         <h2 class="h2">Pandangan menyeluruh setiap tapak</h2>
@@ -265,6 +263,8 @@
         </p>
         <button type="button" class="btn btn--ghost" id="demoOpen" aria-haspopup="dialog" aria-controls="demoModal">Lihat demo langsung</button>
       </div>
+      <div class="demo-host demo-host--terminal reveal" id="terminalDemo" data-lang="ms" role="img"
+             aria-label="Desalink Terminal pada iPad: Gambaran Serian, peta zon daerah. Mukim Tebakang dipilih dan bertukar jingga, menunjukkan 312 isi rumah dengan liputan 38%; Kampung Tebakang, 120 rumah tanpa liputan, dimohon untuk pemasangan, dan pelan pelaksanaan 2 kampung dan 184 rumah dengan juruteknik tiba dalam 24 hingga 48 jam muncul."></div>
     </section>
 
     <!-- ====== FAST DEPLOYMENT ====== -->
@@ -583,10 +583,10 @@
       var load = function () {
         if (loaded) return; loaded = true;
         var css = document.createElement('link');
-        css.rel = 'stylesheet'; css.href = '/js/demos.css?v=5';
+        css.rel = 'stylesheet'; css.href = '/js/demos.css?v=6';
         document.head.appendChild(css);
         var js = document.createElement('script');
-        js.src = '/js/demos.js?v=5'; js.defer = true;
+        js.src = '/js/demos.js?v=6'; js.defer = true;
         document.body.appendChild(js);
       };
       if (!('IntersectionObserver' in window)) return load();
