@@ -17,3 +17,31 @@ for (const [id, Demo] of DEMOS) {
   host.classList.add('is-ready')
   createRoot(host).render(<Demo />)
 }
+
+// The interactive Terminal dashboard, opened from "View live demo"
+import { TerminalApp } from './terminal/App'
+let terminalRoot: ReturnType<typeof createRoot> | null = null
+let opener: HTMLElement | null = null
+function openTerminal() {
+  if (terminalRoot) return
+  opener = document.activeElement as HTMLElement | null
+  const el = document.createElement('div')
+  el.id = 'terminalApp'
+  document.body.appendChild(el)
+  document.documentElement.style.overflow = 'hidden'
+  terminalRoot = createRoot(el)
+  terminalRoot.render(
+    <TerminalApp
+      onClose={() => {
+        terminalRoot?.unmount()
+        terminalRoot = null
+        el.remove()
+        document.documentElement.style.overflow = ''
+        opener?.focus({ preventScroll: true })
+      }}
+    />,
+  )
+}
+const w = window as unknown as { __openTerminal?: () => void; __wantTerminal?: boolean }
+w.__openTerminal = openTerminal
+if (w.__wantTerminal) openTerminal()

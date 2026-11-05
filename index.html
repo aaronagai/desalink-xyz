@@ -261,7 +261,7 @@
           Deploy and manage Starlink across multiple villages without the overhead.
           Track uptime, bandwidth and hardware status for every installation from one screen.
         </p>
-        <button type="button" class="btn btn--ghost" id="demoOpen" aria-haspopup="dialog" aria-controls="demoModal">View live demo</button>
+        <button type="button" class="btn btn--ghost" id="demoOpen" aria-haspopup="dialog">View live demo</button>
       </div>
       <div class="demo-host demo-host--terminal reveal" id="terminalDemo" role="img"
              aria-label="Desalink Terminal on an iPad: Serian Overview, a map of the zones of the district. Mukim Tebakang is selected and turns orange, showing 312 households at 38% coverage; Kampung Tebakang, with 120 homes and no coverage, is requested for installation, and a rollout plan of 2 villages and 184 homes with technicians on site in 24 to 48 hours slides in."></div>
@@ -515,60 +515,6 @@
     <div class="ph ph--footer" aria-hidden="true"><span>Image: footer landscape</span></div>
   </footer>
 
-  <!-- Live demo: Desalink Terminal dashboard -->
-  <div class="modal" id="demoModal" role="dialog" aria-modal="true" aria-labelledby="dashTitle" hidden>
-    <div class="modal__backdrop" id="demoBackdrop" tabindex="-1"></div>
-    <div class="dash" role="document">
-      <header class="dash__head">
-        <div class="dash__brand">
-          <span class="dash__title" id="dashTitle"><b>✱</b> Desalink Terminal</span>
-          <span class="sitemap__live"><i></i>Live</span>
-        </div>
-        <div class="dash__filters" id="dashFilters" role="group" aria-label="Filter sites">
-          <span class="dash__pill" aria-hidden="true"></span>
-          <button type="button" class="dash__filter is-on" data-filter="all">All <span></span></button>
-          <button type="button" class="dash__filter" data-filter="connected">Connected <span></span></button>
-          <button type="button" class="dash__filter" data-filter="pending">Pending <span></span></button>
-          <button type="button" class="dash__filter" data-filter="inactive">Inactive <span></span></button>
-        </div>
-        <button type="button" class="dash__close" id="demoClose" aria-label="Close">&times;</button>
-      </header>
-
-      <div class="dash__body">
-        <div class="dash__map">
-          <svg class="sitemap__svg" id="dashSvg" viewBox="0 0 630 430" role="img" aria-label="Map of Desalink sites across Sarawak"></svg>
-          <div class="dash__detail" id="dashDetail" aria-live="polite">
-            <div class="dash__detail-top">
-              <span class="dash__detail-name" id="detName"></span>
-              <span class="mono mono--muted dash__detail-loc" id="detLoc"></span>
-            </div>
-            <span class="mono dash__detail-status" id="detStatus"></span>
-            <dl class="dash__stats">
-              <div><dt>Uptime (30d)</dt><dd class="mono" id="detUptime"></dd></div>
-              <div><dt>Latency</dt><dd class="mono" id="detLatency"></dd></div>
-              <div><dt>Download</dt><dd class="mono" id="detDown"></dd></div>
-            </dl>
-            <div class="dash__usage">
-              <div class="dash__usage-row"><span>Data this month</span><span class="mono" id="detUsed"></span></div>
-              <div class="dash__bar"><i id="detBar"></i></div>
-            </div>
-            <span class="dash__detail-plan" id="detPlan"></span>
-          </div>
-        </div>
-        <div class="dash__side">
-          <div class="dash__cols mono"><span>Site</span><span>Latency</span><span>Uptime</span></div>
-          <ul class="dash__list" id="dashList"></ul>
-        </div>
-      </div>
-
-      <footer class="dash__foot">
-        <span class="mono mono--muted" id="dashSummary"></span>
-        <span class="mono mono--muted" id="dashUpdated"></span>
-        <a href="#order" class="textlink" id="dashCta">Plan a multi-site rollout</a>
-      </footer>
-    </div>
-  </div>
-
   <!-- canvas-confetti (ISC licence): browser build, pinned with an integrity hash -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.js"
           integrity="sha384-bopE5cbMjKUprmGnIRk2UdvCnHImrRLCtNW2uR6oDYqO+o3XWJeuIrWWxDzeDgNW"
@@ -583,12 +529,18 @@
       var load = function () {
         if (loaded) return; loaded = true;
         var css = document.createElement('link');
-        css.rel = 'stylesheet'; css.href = '/js/demos.css?v=6';
+        css.rel = 'stylesheet'; css.href = '/js/demos.css?v=7';
         document.head.appendChild(css);
         var js = document.createElement('script');
-        js.src = '/js/demos.js?v=6'; js.defer = true;
+        js.src = '/js/demos.js?v=7'; js.defer = true;
         document.body.appendChild(js);
       };
+      // "View live demo" opens the interactive Terminal (loading the bundle first if needed)
+      var demoBtn = document.getElementById('demoOpen');
+      if (demoBtn) demoBtn.addEventListener('click', function () {
+        if (window.__openTerminal) return window.__openTerminal();
+        window.__wantTerminal = true; load();
+      });
       if (!('IntersectionObserver' in window)) return load();
       var io = new IntersectionObserver(function (entries) {
         if (entries.some(function (e) { return e.isIntersecting; })) { io.disconnect(); load(); }

@@ -237,7 +237,6 @@ MS = [
     ("Designed to endure the elements, Starlink kits can withstand heavy rain,\n          heat and harsh winds.",
      "Direka untuk menghadapi cuaca, kit Starlink tahan hujan lebat,\n          panas dan angin kencang."),
     # terminal
-    ("Map of Desalink sites across Sarawak", "Peta tapak Desalink di seluruh Sarawak"),
     ("Desalink Terminal <i></i> Multi-site", "Desalink Terminal <i></i> Berbilang tapak"),
     ("A bird's-eye view of every site", "Pandangan menyeluruh setiap tapak"),
     ("Deploy and manage Starlink across multiple villages without the overhead.\n          Track uptime, bandwidth and hardware status for every installation from one screen.",
@@ -307,19 +306,6 @@ MS = [
     ('tile__num--sm">Email</span>', 'tile__num--sm">E-mel</span>'),
     ("Response <i></i> Within 24 hours", "Maklum balas <i></i> Dalam 24 jam"),
     ("Available <i></i> 7 days a week", "Tersedia <i></i> 7 hari seminggu"),
-    # live demo
-    ('aria-label="Filter sites"', 'aria-label="Tapis tapak"'),
-    ('data-filter="all">All <span>', 'data-filter="all">Semua <span>'),
-    ('data-filter="connected">Connected <span>', 'data-filter="connected">Bersambung <span>'),
-    ('data-filter="pending">Pending <span>', 'data-filter="pending">Menunggu <span>'),
-    ('data-filter="inactive">Inactive <span>', 'data-filter="inactive">Tidak aktif <span>'),
-    ('aria-label="Close"', 'aria-label="Tutup"'),
-    ("<dt>Uptime (30d)</dt>", "<dt>Masa operasi (30 hari)</dt>"),
-    ("<dt>Latency</dt>", "<dt>Kependaman</dt>"),
-    ("<dt>Download</dt>", "<dt>Muat turun</dt>"),
-    ("<span>Data this month</span>", "<span>Data bulan ini</span>"),
-    ('<span>Site</span><span>Latency</span><span>Uptime</span>', '<span>Tapak</span><span>Kependaman</span><span>Masa operasi</span>'),
-    ("Plan a multi-site rollout", "Rancang pelaksanaan berbilang tapak"),
 ]
 
 
