@@ -583,10 +583,10 @@
       var load = function () {
         if (loaded) return; loaded = true;
         var css = document.createElement('link');
-        css.rel = 'stylesheet'; css.href = '/js/demos.css?v=4';
+        css.rel = 'stylesheet'; css.href = '/js/demos.css?v=5';
         document.head.appendChild(css);
         var js = document.createElement('script');
-        js.src = '/js/demos.js?v=4'; js.defer = true;
+        js.src = '/js/demos.js?v=5'; js.defer = true;
         document.body.appendChild(js);
       };
       if (!('IntersectionObserver' in window)) return load();

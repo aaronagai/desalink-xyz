@@ -20,6 +20,17 @@ type S = { hour: number | null; x: number | null }
 // Hourly, 6 AM to 6 PM; heavy rain from 2 to 4 PM
 const MBPS = [184, 190, 195, 191, 194, 197, 193, 190, 141, 118, 152, 188, 191]
 const RAIN = [8, 10]
+// Raindrops in the band while the readout is on a rainy hour: position (%),
+// delay and fall time (s), streak length (pt). Fixed so it looks the same
+// every visit.
+const DROPS: [number, number, number, number][] = [
+  [6, 0, 0.62, 14], [17, 0.31, 0.7, 11], [28, 0.12, 0.58, 16], [39, 0.45, 0.66, 12],
+  [50, 0.2, 0.6, 15], [61, 0.52, 0.72, 11], [72, 0.08, 0.64, 14], [83, 0.37, 0.59, 13],
+  [94, 0.26, 0.68, 12], [11, 0.58, 0.63, 10], [33, 0.66, 0.69, 13], [56, 0.74, 0.61, 12],
+  [78, 0.6, 0.66, 15], [89, 0.04, 0.71, 10], [45, 0.83, 0.57, 14], [22, 0.9, 0.65, 12],
+  [3, 0.47, 0.6, 13], [14, 0.15, 0.67, 15], [36, 0.35, 0.62, 11], [47, 0.05, 0.7, 13],
+  [58, 0.4, 0.58, 16], [69, 0.7, 0.64, 12], [81, 0.22, 0.6, 14], [97, 0.55, 0.69, 11],
+]
 
 const COPY = {
   en: {
@@ -133,6 +144,7 @@ export function StormDemo() {
         const v = live && !back ? live : s
         const hx = v.x ?? (v.hour === null ? null : pts[v.hour]!.x)
         const on = v.hour !== null
+        const raining = v.hour !== null && v.hour >= RAIN[0]! && v.hour <= RAIN[1]!
         const hy = hx === null ? null : (yOn(plot.current?.querySelector<SVGPathElement>('.ss-chart__line'), hx) ?? pts[v.hour ?? 0]!.y)
         const p = hx === null || hy === null ? null : { x: hx, y: hy }
         const step = pts[1]!.x - pts[0]!.x
@@ -170,7 +182,12 @@ export function StormDemo() {
                 onPointerLeave={release}
                 onPointerCancel={release}
               >
-                <span className="sd-band" style={{ left: band.left, width: band.right - band.left }}>
+                <span className="sd-band" data-rain={raining || undefined} style={{ left: band.left, width: band.right - band.left }}>
+                  <span className="sd-rain" aria-hidden>
+                    {DROPS.map(([x, delay, dur, len], i) => (
+                      <i key={i} style={{ left: `${x}%`, height: len, animationDelay: `${delay}s`, animationDuration: `${dur}s` }} />
+                    ))}
+                  </span>
                   <span className="sd-band__label">
                     <CloudRain size={15} strokeWidth={2} aria-hidden />
                     {T.rain}

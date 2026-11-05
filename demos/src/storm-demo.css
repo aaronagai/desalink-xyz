@@ -127,6 +127,38 @@
     border-radius: 8px;
     background: repeating-linear-gradient(135deg, transparent 0 6px, rgb(0 0 0 / 0.07) 6px 7px), #f2f2f4;
   }
+  /* Rain falling in the band while the readout is on a rainy hour */
+  .sd-rain {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  .sd-band[data-rain] .sd-rain { opacity: 1; }
+  /* While it rains, the hatching gives way to a solid rain tint so the drops read */
+  .sd-band::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: #e3eaf3;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  .sd-band[data-rain]::before { opacity: 1; }
+  .sd-rain i {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    border-radius: 1px;
+    background: linear-gradient(to bottom, rgb(80 115 160 / 0), rgb(80 115 160 / 0.9));
+    transform: translate(0, -24px) rotate(12deg);
+    animation: sd-fall 0.65s linear infinite;
+    animation-play-state: paused;
+  }
+  .sd-band[data-rain] .sd-rain i { animation-play-state: running; }
   .sd-band__label {
     position: absolute;
     bottom: calc(100% + 7px);
@@ -197,4 +229,12 @@
 
   /* While the visitor scrubs, the scripted finger steps aside */
   &.is-live .ss-cursor { opacity: 0; transition: opacity 0.15s ease; }
+}
+
+@keyframes sd-fall {
+  from { transform: translate(0, -24px) rotate(12deg); }
+  to { transform: translate(-30px, 150px) rotate(12deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sd .sd-rain { display: none; }
 }
